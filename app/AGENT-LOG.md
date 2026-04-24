@@ -57,6 +57,17 @@ Agent D (Body Explorer): Map simulation timeline to stages gradually. Example: b
 
 ## Log Entries
 
+### [Agent D] Zoom fade transition + overlay fix — 2026-04-24
+Status: completed
+What I built:
+- **Fade-to-black zoom transitions** — Replaced the lerp-based camera slide (which looked like a weird sliding motion) with a cinematic fade transition. When navigating between zoom levels: the 3D scene fades to black over 500ms while scaling (1.15x for zoom-in, 0.85x for zoom-out), the model swaps and camera snaps instantly while hidden, then fades back in over 500ms.
+- **Camera snap on zoom** — `CameraController` is now keyed by `zoomIndex` so it remounts and snaps to the correct position instantly (hidden behind the fade overlay). The lerp animation only fires for subtle auto-frame adjustments, not zoom level changes.
+- **Overlay z-index fix** — Initial overlay was `z-30` which faded the entire UI (sidebar, breadcrumb, metrics) to black. Fixed to `z-[5]` so it sits between the 3D canvas and the UI elements (`z-10`). Only the model fades — all UI stays visible.
+- **Transition guard** — `handleNavigate` ignores clicks while a transition is in progress, preventing stacking/flickering.
+What I exported/shared: No new exports.
+Dependencies: None.
+Notes for other agents: The `transitionPhase` state (`'idle' | 'fading-out' | 'fading-in'`) and `zoomDirection` (`'in' | 'out'`) are in `index.tsx`. The 500ms durations match the CSS `duration-500` on both the scale wrapper and the overlay. OrbitControls (drag/zoom/pan) still work normally between transitions.
+
 ### [Agent D] 7-stage gradual model progression + sidebar enhancements — 2026-04-24
 Status: completed
 What I built:

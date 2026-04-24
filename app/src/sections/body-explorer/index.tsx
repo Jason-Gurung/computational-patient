@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import * as THREE from 'three';
@@ -80,13 +80,32 @@ export default function BodyExplorerPage() {
     });
   }, []);
 
+  // Zoom transition state: fade-to-black with zoom scale effect
+  const [transitionPhase, setTransitionPhase] = useState<'idle' | 'fading-out' | 'fading-in'>('idle');
+  const [zoomDirection, setZoomDirection] = useState<'in' | 'out'>('in');
+  const transitionTimer = useRef<ReturnType<typeof setTimeout>>();
+
   const handleNavigate = useCallback(
     (index: number) => {
       const clamped = Math.max(0, Math.min(index, HEART_ZOOM_LEVELS.length - 1));
-      setZoomIndex(clamped);
-      setModelBounds(null); // reset so auto-frame recalculates for the new model
+      if (clamped === zoomIndex || transitionPhase !== 'idle') return;
+
+      setZoomDirection(clamped > zoomIndex ? 'in' : 'out');
+      setTransitionPhase('fading-out');
+
+      clearTimeout(transitionTimer.current);
+      transitionTimer.current = setTimeout(() => {
+        // Swap model + snap camera while screen is black
+        setZoomIndex(clamped);
+        setModelBounds(null);
+        setTransitionPhase('fading-in');
+
+        transitionTimer.current = setTimeout(() => {
+          setTransitionPhase('idle');
+        }, 500);
+      }, 500);
     },
-    [],
+    [zoomIndex, transitionPhase],
   );
 
   if (!patient) {
@@ -106,20 +125,36 @@ export default function BodyExplorerPage() {
 
   return (
     <div className="relative h-[calc(100vh-3.5rem)] w-full overflow-hidden bg-kz-bg-primary">
-      {/* 3D Canvas — full viewport */}
-      <Scene>
-        <CameraController config={cameraConfig} />
-        <ModelViewer zoomIndex={zoomIndex} variant={modelVariant} onModelReady={handleModelReady}>
-          {currentLevel.hotspots.length > 0 && (
-            <HotspotOverlay
-              hotspots={currentLevel.hotspots}
-              onNavigate={handleNavigate}
-              currentZoomIndex={zoomIndex}
-              modelBounds={modelBounds}
-            />
-          )}
-        </ModelViewer>
-      </Scene>
+      {/* 3D Canvas — full viewport, with zoom scale during transitions */}
+      <div
+        className="h-full w-full transition-transform duration-500 ease-in-out"
+        style={{
+          transform:
+            transitionPhase === 'fading-out'
+              ? zoomDirection === 'in' ? 'scale(1.15)' : 'scale(0.85)'
+              : 'scale(1)',
+        }}
+      >
+        <Scene>
+          <CameraController key={zoomIndex} config={cameraConfig} />
+          <ModelViewer zoomIndex={zoomIndex} variant={modelVariant} onModelReady={handleModelReady}>
+            {currentLevel.hotspots.length > 0 && (
+              <HotspotOverlay
+                hotspots={currentLevel.hotspots}
+                onNavigate={handleNavigate}
+                currentZoomIndex={zoomIndex}
+                modelBounds={modelBounds}
+              />
+            )}
+          </ModelViewer>
+        </Scene>
+      </div>
+
+      {/* Zoom transition black overlay */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[5] bg-black transition-opacity duration-500 ease-in-out"
+        style={{ opacity: transitionPhase === 'fading-out' ? 1 : 0 }}
+      />
 
       {/* Top bar — Back link + Breadcrumb, single row */}
       <div className="absolute left-4 right-4 top-3 z-10 flex items-center gap-3">
