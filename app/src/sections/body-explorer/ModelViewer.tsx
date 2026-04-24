@@ -4,7 +4,8 @@ import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { HEART_ZOOM_LEVELS } from '@/data/body-explorer/heart-attr-cm';
 
-const MODEL_PATHS = HEART_ZOOM_LEVELS.map((l) => l.modelPath);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const MODEL_PATHS = HEART_ZOOM_LEVELS.map((l) => `${base}${l.modelPath}`);
 
 export interface ModelBounds {
   center: THREE.Vector3;
