@@ -5,7 +5,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/pfizer-ai-future-vision/',
+  base: '/computational-patient/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

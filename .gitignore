@@ -5,4 +5,4 @@ dist/
 *.log
 _bmad/
 .claude/
-.github/
+.github/skills/
