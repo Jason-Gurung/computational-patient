@@ -102,25 +102,9 @@ The Computational Patient works by aggregating enormous amounts of patient data 
 
 **Data minimisation**: The model is designed to learn from the minimum data necessary. Not every piece of patient data needs to be in the training set — the architecture should be selective about what data actually improves predictions versus what adds privacy risk without proportional benefit.
 
-## Job Displacement and Organisational Change
+## Workforce Transformation
 
-### The Reality
-
-If computational modelling replaces 50% of the need for physical clinical trials, that changes the work landscape substantially:
-
-- **Clinical research organisations (CROs)** that run physical trials face reduced demand
-- **Clinical site staff** — investigators, coordinators, nurses — see trial volumes decrease
-- **Roles shift from execution to interpretation** — running a trial requires different skills than interrogating a computational model
-
-### The Response
-
-**Honest acknowledgment**: Transformative technology changes the nature of work. Pretending otherwise isn't ethical. Some current roles will become less necessary.
-
-**Transition planning**: Invest in retraining and role evolution. Clinical scientists who understand both biology and computation are extraordinarily valuable — the transition is toward higher-skilled, higher-value work, but the transition itself requires investment and support.
-
-**Net impact is job creation**: The computational platform creates entirely new roles — biological model engineers, validation scientists, computational clinical pharmacologists, model auditors. History consistently shows that transformative technology creates more jobs than it destroys, but the transition period requires intentional management.
-
-**Patient-facing roles remain central**: Even with computational modelling, real patients will still participate in trials — smaller, shorter, and better designed. The roles supporting those patients don't disappear; they evolve.
+The Computational Patient enables a dramatically leaner organisation. The workforce shift is substantial: fewer people, but more technical, more highly compensated, and more productive. Routine execution roles give way to computational, analytical, and validation roles. The organisation becomes smaller and faster.
 
 ## The Non-Negotiables
 

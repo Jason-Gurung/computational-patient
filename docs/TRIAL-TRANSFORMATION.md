@@ -1,5 +1,11 @@
 # Trial Transformation — How This Reshapes Every Phase of Clinical Development
 
+## The Core Principle: Simulate First, Then Confirm
+
+The Computational Patient does not replace human trials. It runs **before and alongside** them as a safety and intelligence layer. The principle is simple: **no human should ever be exposed to a drug that hasn't first been exhaustively tested on its computational counterpart.**
+
+Human trials still happen. They are still the gold standard for regulatory approval. But they become smaller, shorter, safer, and far more likely to succeed — because the computational layer has already done the expensive exploration, caught the obvious failures, and optimised every aspect of the trial design before a single real patient is enrolled.
+
 ## The Current Pipeline
 
 ```
@@ -13,15 +19,16 @@ Each phase is essentially an independent experiment. The previous phase tells yo
 ## The Transformed Pipeline
 
 ```
-                  COMPUTATIONAL LAYER (continuous)
-                  ═══════════════════════════════════════════════
-                  ↕         ↕          ↕          ↕          ↕
-Preclinical → Phase I → Phase II → Phase III → Review → Market
-(1-2 years)  (6-12mo) (12-18mo)  (18-24mo)  (6-12mo)
-                                                      Total: 6-9 years
+COMPUTATIONAL SAFETY & INTELLIGENCE LAYER (runs first, then continuous)
+═══════════════════════════════════════════════════════════════════════
+  Simulate → Predict → Filter → Optimise → Monitor → Learn
+  ↕              ↕          ↕          ↕          ↕
+  Preclinical → Phase I → Phase II → Phase III → Review → Market
+  (1-2 years)  (6-12mo) (12-18mo)  (18-24mo)  (6-12mo)
+                                                        Total: 6-9 years
 ```
 
-The computational layer runs in parallel with — not instead of — each phase. It feeds predictions into each phase and ingests real data out of each phase, continuously refining its model. The physical trials become smaller, faster, and more targeted because the computational layer has already explored the design space.
+The computational layer runs **before** each phase to prepare and optimise, then **alongside** each phase to monitor and learn. It doesn't replace the human trial — it de-risks it. The physical trials become smaller, faster, and more targeted because the hard questions have already been answered computationally.
 
 ## Before Phase I: The First Big Filter
 

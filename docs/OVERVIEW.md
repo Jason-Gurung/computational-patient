@@ -8,7 +8,9 @@ Would you design clinical trials the way they work today?
 
 You wouldn't. You'd look at the problem — *how does this molecule interact with this biology?* — and recognise it as fundamentally a computational question being answered with a physical experiment because we lacked the tools to compute it.
 
-**The Computational Patient is what you'd build instead.**
+**The Computational Patient is what you'd build before.**
+
+Not instead of clinical trials — before them. A safety and intelligence layer that ensures no human is ever exposed to a drug the model flags as dangerous, and that every trial that does run is as small, fast, and high-confidence as possible.
 
 ## What Is a Computational Patient?
 
@@ -80,6 +82,10 @@ Every competitor starts from scratch. Pfizer's model has seen everything Pfizer 
 
 The core competency shifts from running physical experiments to building and refining biological models. Wet labs still exist but serve a different purpose — they validate and calibrate computational predictions rather than being the primary engine of discovery.
 
+### The Organisation Does More with Less
+
+Every efficiency compounds. Smaller trials need fewer people to run them. Computational preclinical work replaces large lab operations. Model-driven decisions eliminate layers of portfolio governance. The organisation becomes dramatically leaner while producing more — fewer people, fewer committees, fewer overhead functions, greater output.
+
 ### Portfolio Decisions Become Quantitative
 
 "Should we advance this compound?" stops being a judgment call by a committee reviewing slides. It becomes: "The model predicts 73% probability of Phase III success if we enrich for biomarker X. The expected return is $2.4B against a $380M investment. Here are the three scenarios."
@@ -105,4 +111,4 @@ When you can simulate a clinical trial in days instead of running it over years,
 | Rare disease feasibility | Often impossible (too few patients) | Fully simulatable |
 | Personalised dosing | One-size-fits-all | Patient-archetype optimised |
 
-The financial impact alone is staggering — preventing 2-3 Phase III failures per decade saves $500M-$1B. Compressing timelines by 4-6 years means drugs reach patients faster and generate revenue sooner. But the real impact is human: fewer patients in trials that were destined to fail, faster access to treatments that work, and the ability to develop medicines for rare diseases where traditional trials are impossible.
+The financial impact alone is staggering — preventing 2-3 Phase III failures per decade saves $500M-$1B. Compressing timelines by 4-6 years means drugs reach patients faster and generate revenue sooner. Dramatically lower headcount requirements mean the cost structure of the entire organisation is transformed. And the human impact: fewer patients exposed to drugs that were destined to fail, faster access to treatments that work, and the ability to develop medicines for rare diseases where traditional trials are impossible.
