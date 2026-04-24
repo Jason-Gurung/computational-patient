@@ -75,7 +75,7 @@ export function PatientGrid({ currentWeek, activeFilters, cohortSize }: PatientG
   }, []);
 
   // Continuous draw loop for pulsing clickable patients
-  const drawRef = useRef<() => void>();
+  const drawRef = useRef<() => void>(undefined);
   drawRef.current = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
