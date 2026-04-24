@@ -83,7 +83,7 @@ export default function BodyExplorerPage() {
   // Zoom transition state: fade-to-black with zoom scale effect
   const [transitionPhase, setTransitionPhase] = useState<'idle' | 'fading-out' | 'fading-in'>('idle');
   const [zoomDirection, setZoomDirection] = useState<'in' | 'out'>('in');
-  const transitionTimer = useRef<ReturnType<typeof setTimeout>>();
+  const transitionTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const handleNavigate = useCallback(
     (index: number) => {
