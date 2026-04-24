@@ -1,0 +1,43 @@
+# The Computational Patient — Reimagining Drug Development from First Principles
+
+## What If We Could Test Every Drug on Every Human — Without Touching a Single Person?
+
+Clinical trials are the most expensive, slowest, and most failure-prone process in the modern economy. It takes 10-15 years and $1-2 billion to bring a single drug to market. 90% of candidates fail. The worst failures come last — a Phase III collapse costs $200-300M and years of wasted effort.
+
+The fundamental problem: **we can't know how a drug will behave in a human body until we put it in a human body.**
+
+This project explores a radical premise: **what if we could?**
+
+Not incremental improvements to trial design. Not better statistics. A fundamentally different approach — building complete computational models of human biology detailed enough to simulate how any drug interacts with any patient. A digital replica of human physiology where drugs can be tested millions of times, across every possible patient profile, before a single real person is enrolled.
+
+This is the vision for the **Computational Patient** — a future where Pfizer's deepest competitive advantage isn't its pipeline of molecules, but its model of humanity itself.
+
+## What's In This Repo
+
+```
+docs/
+├── OVERVIEW.md                 The full concept — what, why, and how it changes everything
+├── BIOLOGY-MODEL.md            How you actually model a human from molecules to organism
+├── POPULATION-DIVERSITY.md     Generating virtual cohorts that represent real human variation
+├── DISEASE-MODELS.md           How modeling differs across therapeutic areas
+├── TRIAL-TRANSFORMATION.md     How this reshapes every phase of clinical development
+├── DATA-FLYWHEEL.md            The compounding data advantage — every trial makes it better
+├── REGULATORY-PATH.md          How regulators evolve to accept computational evidence
+└── ETHICS.md                   The hard questions — bias, consent, rare populations
+
+archive/
+├── VISION-ORIGINAL.md          Original broader vision doc (Pfizer Brain + more)
+└── DEMO-IDEAS.md               Earlier demo/mockup brainstorming
+```
+
+## The Core Argument
+
+1. **Biology is computable.** Not today, not fully — but the trajectory is clear. Molecular dynamics, protein folding, cell signaling, organ physiology — each layer is becoming simulatable. The question isn't whether, it's when.
+
+2. **Pfizer has the data no one else has.** Decades of clinical trial results, millions of patient outcomes, proprietary molecular libraries. This data is the training ground for models no startup or tech company can replicate.
+
+3. **The model is a compounding asset.** Every drug developed makes it better. Every failure teaches it. Every success validates it. Drug 1 starts from general knowledge. Drug 50 predicts clinical outcomes from molecular structure alone.
+
+4. **This doesn't replace trials — it transforms them.** Smaller, faster, higher-confidence trials. Fewer late-stage failures. Better patient selection. Regulatory acceptance will follow the evidence.
+
+The result: drugs developed in 6-9 years instead of 15. At half the cost. With higher success rates. And a growing competitive moat that deepens with every program.
