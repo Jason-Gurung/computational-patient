@@ -23,35 +23,40 @@ function SuspenseWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <App />,
+      children: [
+        {
+          index: true,
+          element: <SuspenseWrapper><LandingPage /></SuspenseWrapper>,
+        },
+        {
+          path: 'setup',
+          element: <SuspenseWrapper><TrialSetupPage /></SuspenseWrapper>,
+        },
+        {
+          path: 'trial',
+          element: <SuspenseWrapper><PopulationViewPage /></SuspenseWrapper>,
+        },
+        {
+          path: 'trial/patient/:patientId',
+          element: <SuspenseWrapper><BodyExplorerPage /></SuspenseWrapper>,
+        },
+        {
+          path: 'how-it-works',
+          element: <SuspenseWrapper><HowItWorksPage /></SuspenseWrapper>,
+        },
+        {
+          path: 'impact',
+          element: <SuspenseWrapper><ImpactPage /></SuspenseWrapper>,
+        },
+      ],
+    },
+  ],
   {
-    path: '/',
-    element: <App />,
-    children: [
-      {
-        index: true,
-        element: <SuspenseWrapper><LandingPage /></SuspenseWrapper>,
-      },
-      {
-        path: 'setup',
-        element: <SuspenseWrapper><TrialSetupPage /></SuspenseWrapper>,
-      },
-      {
-        path: 'trial',
-        element: <SuspenseWrapper><PopulationViewPage /></SuspenseWrapper>,
-      },
-      {
-        path: 'trial/patient/:patientId',
-        element: <SuspenseWrapper><BodyExplorerPage /></SuspenseWrapper>,
-      },
-      {
-        path: 'how-it-works',
-        element: <SuspenseWrapper><HowItWorksPage /></SuspenseWrapper>,
-      },
-      {
-        path: 'impact',
-        element: <SuspenseWrapper><ImpactPage /></SuspenseWrapper>,
-      },
-    ],
-  },
-]);
+    basename: import.meta.env.BASE_URL,
+  }
+);
