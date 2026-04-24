@@ -55,9 +55,13 @@ export default function BodyExplorerPage() {
   const currentLevel = HEART_ZOOM_LEVELS[zoomIndex];
 
   // Determine which model variant to show based on patient response + timeline
-  const modelVariant: ModelVariant = useMemo(() => {
-    if (!patient || simState.currentWeek < 12) return 'base'; // untreated phase
-    return patient.treatmentResponse; // 'responding' or 'progressing'
+  // 7 stages: base (weeks 0-11), stage-1 (12-24), stage-2 (25-40), stage-3 (41+)
+  const modelVariant = useMemo((): ModelVariant => {
+    if (!patient || simState.currentWeek < 12) return 'base';
+    const response = patient.treatmentResponse; // 'responding' or 'progressing'
+    if (simState.currentWeek < 25) return `${response}-1` as ModelVariant;
+    if (simState.currentWeek < 41) return `${response}-2` as ModelVariant;
+    return `${response}-3` as ModelVariant;
   }, [patient, simState.currentWeek]);
 
   const cameraConfig = useMemo(() => {
@@ -133,15 +137,22 @@ export default function BodyExplorerPage() {
       <ZoomLevelIndicator currentIndex={zoomIndex} onNavigate={handleNavigate} />
 
       {/* Left — Patient profile (below top bar) */}
-      <PatientProfileSidebar patient={patient} isDeepZoom={isDeepZoom} />
+      <PatientProfileSidebar patient={patient} isDeepZoom={isDeepZoom} currentWeek={simState.currentWeek} />
 
       {/* Right — Narration + Metrics, scrollable, narrower */}
       <div className="absolute right-12 top-14 z-10 flex max-h-[calc(100%-9rem)] w-72 flex-col gap-2 overflow-y-auto">
         <NarrationOverlay
           narrations={currentLevel.narration}
           currentWeek={simState.currentWeek}
+          responseType={patient?.treatmentResponse}
         />
-        <MetricsPanel metrics={currentLevel.metrics} />
+        <MetricsPanel
+          metrics={currentLevel.metrics}
+          respondingMetrics={currentLevel.respondingMetrics}
+          progressingMetrics={currentLevel.progressingMetrics}
+          responseType={patient?.treatmentResponse}
+          isTreated={simState.currentWeek >= 12}
+        />
       </div>
 
       {/* Bottom — Timeline milestones + time controls */}

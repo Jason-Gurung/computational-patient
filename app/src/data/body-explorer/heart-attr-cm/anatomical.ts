@@ -25,7 +25,7 @@ export const heartAnatomical: ZoomLevelMeta = {
     {
       id: 'anatomical-untreated',
       title: 'The Heart in Context',
-      body: 'The heart sits in the mediastinum, enclosed in the pericardium. In ATTR-CM, amyloid deposits infiltrate the myocardium — the thick muscular layer that does the pumping. The computational model captures not just the heart in isolation, but how it interacts with surrounding structures: the lungs receiving deoxygenated blood, the aorta distributing oxygenated blood, and the coronary arteries feeding the heart muscle itself.',
+      body: 'The heart sits in the mediastinum, enclosed in the pericardium. In ATTR-CM, amyloid deposits infiltrate the myocardium — the thick muscular layer that does the pumping. The computational model captures how the heart interacts with surrounding structures: the lungs, the aorta, and the coronary arteries feeding the heart muscle itself.',
       phase: 'untreated',
       zoomLevel: ZoomLevel.Anatomical,
       timeRange: [0, 12],
@@ -34,9 +34,41 @@ export const heartAnatomical: ZoomLevelMeta = {
         { term: 'pericardium', definition: 'A double-walled sac containing the heart and the roots of the great vessels' },
       ],
     },
+    {
+      id: 'anatomical-drug-responding',
+      title: 'Treatment Active — Heart Stabilising',
+      body: 'The computational model shows the heart responding to tafamidis therapy. Amyloid infiltration of the myocardium has slowed. The pericardial effusion is stable. Importantly, the surrounding organs remain unaffected — lung function, aortic compliance, and coronary perfusion are all within expected parameters. The model predicts the heart will maintain its current function.',
+      phase: 'drug-administered',
+      zoomLevel: ZoomLevel.Anatomical,
+      timeRange: [12, 36],
+      responseType: 'responding',
+    },
+    {
+      id: 'anatomical-drug-progressing',
+      title: 'Treatment Active — Heart Still Declining',
+      body: 'Despite treatment, the computational model shows ongoing amyloid infiltration of the myocardium. The heart continues to enlarge. Pericardial effusion is increasing — fluid accumulating around the heart as it struggles. The model also flags secondary effects: pulmonary congestion is developing as the weakened left ventricle backs up blood into the lungs.',
+      phase: 'drug-administered',
+      zoomLevel: ZoomLevel.Anatomical,
+      timeRange: [12, 36],
+      responseType: 'progressing',
+      highlights: [
+        { term: 'pericardial effusion', definition: 'Fluid buildup around the heart — worsening effusion indicates increasing cardiac dysfunction' },
+        { term: 'pulmonary congestion', definition: 'Blood backing up into the lungs due to poor left ventricle function — causes breathlessness' },
+      ],
+    },
   ],
   metrics: [
     { label: 'Heart Size', value: 'Enlarged', trend: 'up', contextNote: 'Amyloid infiltration causing hypertrophy' },
     { label: 'Pericardial Effusion', value: 'Mild', contextNote: 'Small fluid collection — common in ATTR-CM' },
+  ],
+  respondingMetrics: [
+    { label: 'Heart Size', value: 'Stable', trend: 'stable', contextNote: 'No further enlargement' },
+    { label: 'Pericardial Effusion', value: 'Stable', trend: 'stable', contextNote: 'Not worsening' },
+    { label: 'Lung Function', value: 'Normal', contextNote: 'No secondary congestion' },
+  ],
+  progressingMetrics: [
+    { label: 'Heart Size', value: 'Increasing', trend: 'up', contextNote: 'Progressive hypertrophy' },
+    { label: 'Pericardial Effusion', value: 'Moderate', trend: 'up', contextNote: 'Worsening fluid collection' },
+    { label: 'Lung Status', value: 'Congestion', trend: 'down', contextNote: 'Early pulmonary backup' },
   ],
 };

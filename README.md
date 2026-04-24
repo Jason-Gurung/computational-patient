@@ -16,7 +16,32 @@ This doesn't replace human trials — it runs **before and alongside** them. A s
 
 This is the vision for the **Computational Patient** — a future where Pfizer's deepest competitive advantage isn't its pipeline of molecules, but its model of humanity itself.
 
-## What's In This Repo
+## Demo App
+
+There's a hardcoded frontend demo in `app/`. It's a React app with no backend — everything is mocked data and pre-built visuals. To run it:
+
+```
+cd app
+npm install
+npm run dev
+```
+
+### The flow
+
+1. **Landing page** (`/`) — intro with animated particles, key messages, call-to-action
+2. **Trial Setup** (`/setup`) — configure a virtual trial: pick cohort size, disease, drug, patient mix. Only Heart/ATTR-CM/Vyndaqel is fully built out, the rest are selectable but lead to the same data.
+3. **Population View** (`/trial`) — 10K virtual patients on a canvas grid, colour-coded by outcome. Play/pause to watch outcomes evolve over 52 weeks. 3 patients glow and are clickable.
+4. **Body Explorer** (`/trial/patient/patient-001`) — the centrepiece. 3D models at 6 zoom levels: full body → chest → heart → tissue → cell → protein. Navigate via hotspots or breadcrumbs. Side panels show patient profile, narration, and metrics.
+5. **Supporting pages** — How It Works (`/how-it-works`) and Impact (`/impact`) with scroll-animated infographics.
+
+### What's not wired up yet
+
+- The trial config from Setup doesn't fully carry through to Population View (cohort size does, but outcomes are the same regardless of disease/drug choice)
+- Body Explorer time-progression models (responding/progressing variants) exist as .glb files but aren't loaded by the viewer yet — it shows the base state only
+- Only 3 patients are clickable in the population grid (patient-001, -002, -003). The rest are visual filler.
+- No mobile layout — designed for desktop/presentation screen recording
+
+## Vision Documents
 
 ```
 docs/

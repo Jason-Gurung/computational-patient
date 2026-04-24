@@ -7,7 +7,10 @@ import { HEART_ZOOM_LEVELS } from '@/data/body-explorer/heart-attr-cm';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const MODEL_PATHS = HEART_ZOOM_LEVELS.map((l) => `${base}${l.modelPath}`);
 
-export type ModelVariant = 'base' | 'responding' | 'progressing';
+export type ModelVariant =
+  | 'base'
+  | 'responding-1' | 'responding-2' | 'responding-3'
+  | 'progressing-1' | 'progressing-2' | 'progressing-3';
 
 export interface ModelBounds {
   center: THREE.Vector3;
@@ -17,12 +20,12 @@ export interface ModelBounds {
 /**
  * Compute the model path for a given zoom level and variant.
  * Full body (index 0) has no variants — always returns the base path.
- * For other levels, appends -responding or -progressing before .glb.
+ * For other levels, appends the staged variant suffix before .glb.
  */
 function getVariantPath(zoomIndex: number, variant: ModelVariant): string {
   const basePath = MODEL_PATHS[zoomIndex] ?? MODEL_PATHS[0];
   if (variant === 'base' || zoomIndex === 0) return basePath;
-  // e.g. /assets/models/custom/heart-organ.glb → heart-organ-responding.glb
+  // e.g. /assets/models/custom/heart-organ.glb → heart-organ-responding-2.glb
   return basePath.replace(/\.glb$/, `-${variant}.glb`);
 }
 
@@ -132,8 +135,10 @@ function LoadingSpinner() {
 
 // Preload base models
 MODEL_PATHS.forEach((p) => useGLTF.preload(p));
-// Preload variants for smooth transitions
+// Preload all 6 variant stages per zoom level (skip full-body at index 0)
+const VARIANT_SUFFIXES = ['responding-1', 'responding-2', 'responding-3', 'progressing-1', 'progressing-2', 'progressing-3'];
 for (let i = 1; i < MODEL_PATHS.length; i++) {
-  useGLTF.preload(MODEL_PATHS[i].replace(/\.glb$/, '-responding.glb'));
-  useGLTF.preload(MODEL_PATHS[i].replace(/\.glb$/, '-progressing.glb'));
+  for (const suffix of VARIANT_SUFFIXES) {
+    useGLTF.preload(MODEL_PATHS[i].replace(/\.glb$/, `-${suffix}.glb`));
+  }
 }

@@ -4,6 +4,7 @@ import type { NarrationContent, TreatmentPhase } from '@/shared/types';
 interface NarrationOverlayProps {
   narrations: NarrationContent[];
   currentWeek: number;
+  responseType?: 'responding' | 'progressing';
 }
 
 function getPhaseFromWeek(week: number): TreatmentPhase {
@@ -12,23 +13,38 @@ function getPhaseFromWeek(week: number): TreatmentPhase {
   return 'post-treatment';
 }
 
-function selectNarration(narrations: NarrationContent[], week: number): NarrationContent | null {
+function selectNarration(
+  narrations: NarrationContent[],
+  week: number,
+  responseType?: 'responding' | 'progressing',
+): NarrationContent | null {
   const phase = getPhaseFromWeek(week);
 
-  // Exact phase match
-  const phaseMatch = narrations.find((n) => n.phase === phase);
-  if (phaseMatch) return phaseMatch;
+  // For treated phases, prefer response-specific narration
+  if (phase !== 'untreated' && responseType) {
+    const responseMatch = narrations.find(
+      (n) => n.phase === phase && n.responseType === responseType,
+    );
+    if (responseMatch) return responseMatch;
+  }
 
-  // Fallback: find narration whose time range contains the current week
-  const timeMatch = narrations.find((n) => week >= n.timeRange[0] && week < n.timeRange[1]);
+  // Fall back to generic (no responseType) narration for this phase
+  const genericMatch = narrations.find(
+    (n) => n.phase === phase && !n.responseType,
+  );
+  if (genericMatch) return genericMatch;
+
+  // Fallback: time range match
+  const timeMatch = narrations.find(
+    (n) => week >= n.timeRange[0] && week < n.timeRange[1] && (!n.responseType || n.responseType === responseType),
+  );
   if (timeMatch) return timeMatch;
 
-  // Last resort: return the last available narration
   return narrations[narrations.length - 1] ?? null;
 }
 
-export function NarrationOverlay({ narrations, currentWeek }: NarrationOverlayProps) {
-  const narration = selectNarration(narrations, currentWeek);
+export function NarrationOverlay({ narrations, currentWeek, responseType }: NarrationOverlayProps) {
+  const narration = selectNarration(narrations, currentWeek, responseType);
   if (!narration) return null;
 
   return (

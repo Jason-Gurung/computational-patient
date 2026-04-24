@@ -38,21 +38,46 @@ Blender Agent (F) will update this section when models are exported:
 | Heart Cellular | `public/assets/models/custom/heart-cellular.glb` | **ready v3** (2.9M) — Added 10 amyloid fibrils + 5 clumps pressing against cell exterior |
 | Heart Micro | `public/assets/models/custom/heart-micro.glb` | **ready v3** (3.0M) — Added 3 orange misfolded monomers, 8-sphere purple protofibril chain, brighter green drug |
 
-**Time-progression variants** (responding = drug working, progressing = drug failing):
+**Time-progression variants** — 7 stages per zoom level for gradual disease progression:
 
-| Model | Responding File | Progressing File |
-|-------|----------------|-----------------|
-| Heart Anatomical | `heart-anatomical-responding.glb` (426K) | `heart-anatomical-progressing.glb` (469K) |
-| Heart Organ | `heart-organ-responding.glb` (1.0M) | `heart-organ-progressing.glb` (1.1M) |
-| Heart Tissue | `heart-tissue-responding.glb` (1.6M) | `heart-tissue-progressing.glb` (1.9M) |
-| Heart Cellular | `heart-cellular-responding.glb` (2.8M) | `heart-cellular-progressing.glb` (2.9M) |
-| Heart Micro | `heart-micro-responding.glb` (2.9M) | `heart-micro-progressing.glb` (2.9M) |
+Naming: `heart-{level}-{responding|progressing}-{1|2|3}.glb`
 
-Agent D (Body Explorer): Load the base `.glb` for untreated/sick state, swap to `-responding.glb` when drug is working (post-treatment success), or `-progressing.glb` when drug fails (post-treatment failure). The base model = untreated disease state. Full body stays the same across all phases.
+| Stage | Responding (drug works) | Progressing (drug fails) |
+|-------|------------------------|-------------------------|
+| Base | `heart-{level}.glb` — untreated disease (shared start) | same |
+| Stage 1 | `-responding-1` — drug just arriving, subtle change | `-progressing-1` — slight worsening, drug dim |
+| Stage 2 | `-responding-2` — clear improvement | `-progressing-2` — clear worsening |
+| Stage 3 | `-responding-3` — mostly recovered | `-progressing-3` — severe disease |
+
+All 5 zoom levels (anatomical, organ, tissue, cellular, micro) have all 6 variant files + 1 base = 7 models each. Full body has no variants. **Total: 36 model files.**
+
+Agent D (Body Explorer): Map simulation timeline to stages gradually. Example: base (weeks 0-11), stage-1 (weeks 12-24), stage-2 (weeks 25-40), stage-3 (weeks 40+). Full body stays the same across all phases.
 
 ---
 
 ## Log Entries
+
+### [Agent D] 7-stage gradual model progression + sidebar enhancements — 2026-04-24
+Status: completed
+What I built:
+- **7-stage model variant system** — Updated `ModelViewer` to support all 36 model files: base + 6 variants per zoom level (`responding-1/2/3`, `progressing-1/2/3`). Fixed **BREAKING CHANGE** from Agent F where old `-responding.glb`/`-progressing.glb` were renamed to `-responding-2.glb`/`-progressing-2.glb`.
+- **Gradual timeline mapping** — `index.tsx` now maps simulation weeks to stages: base (weeks 0-11), stage-1 (weeks 12-24), stage-2 (weeks 25-40), stage-3 (weeks 41+). The 3D model visually transitions through 4 distinct states as the timeline progresses.
+- **Full preloading** — All 36 model files preloaded via `useGLTF.preload()` for smooth transitions between stages.
+- **Treatment Status sidebar section** — New dynamic section showing current phase badge (Untreated/Tafamidis Active/Post-Treatment), response prediction badge (green Responding / red Progressing) when treated, and week counter.
+- **Cardiac Status sidebar section** — 4 heart metrics (NYHA Class, EF, NT-proBNP, Wall Thickness) that evolve gradually across 4 stages (baseline + 3 treatment stages), matching the model progression. Responding shows green improving numbers; progressing shows orange→red worsening numbers.
+What I exported/shared: `ModelVariant` type updated to union of 7 literal strings.
+Dependencies: Agent F's 36 .glb files (all confirmed present).
+Notes for other agents: The `ModelVariant` type is now `'base' | 'responding-1' | 'responding-2' | 'responding-3' | 'progressing-1' | 'progressing-2' | 'progressing-3'`. Timeline-to-stage mapping: base (0-11), stage-1 (12-24), stage-2 (25-40), stage-3 (41+).
+
+### [Agent F] Gradual 7-stage disease progression models — 2026-04-24 19:58
+Status: completed
+What I built: Expanded from 2 variants to 6 variants per zoom level (3 responding + 3 progressing) for gradual disease progression instead of instant binary flip. Previous `-responding.glb` and `-progressing.glb` renamed to `-responding-2.glb` and `-progressing-2.glb`. New stage-1 (subtle) and stage-3 (extreme) created for both paths.
+- **Stage 1 (subtle)**: Drug just administered — disease barely changed, drug molecules appearing (responding) or drug dim/failing (progressing). Amyloid deposits ~85-90% of base size.
+- **Stage 2 (moderate)**: Clear change visible — disease noticeably retreating (responding) or spreading (progressing). Previously the only variant, now the middle stage.
+- **Stage 3 (extreme)**: End state — mostly recovered with 1 tiny deposit (responding) or severely diseased with 2x deposits + extra elements (progressing).
+What I exported/shared: 20 new .glb files + 10 renamed. Naming convention: `heart-{level}-{responding|progressing}-{1|2|3}.glb`. Total: 36 model files.
+Dependencies: Agent D needs to update Body Explorer to use 7 stages instead of 3. Suggested timeline mapping: base (weeks 0-11), stage-1 (weeks 12-24), stage-2 (weeks 25-40), stage-3 (weeks 40+).
+Notes for other agents: **BREAKING CHANGE**: Old `-responding.glb` and `-progressing.glb` files no longer exist — they're now `-responding-2.glb` and `-progressing-2.glb`. Agent D's `getVariantPath()` needs updating to append the stage number. All preload paths need updating too.
 
 ### [Agent D] Body Explorer — Orbit controls, auto-framing, model variants, UI fixes — 2026-04-24
 Status: completed
