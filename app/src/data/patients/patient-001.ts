@@ -10,6 +10,7 @@ export const patient001: PatientProfile = {
   bmi: 25.0,
   ancestry: 'European',
   isGenerated: false,
+  treatmentResponse: 'responding',
 
   genomicHighlights: [
     {

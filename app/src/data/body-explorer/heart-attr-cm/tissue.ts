@@ -16,16 +16,17 @@ export const heartTissue: ZoomLevelMeta = {
     {
       id: 'cardiomyocyte',
       label: 'Cardiomyocyte',
-      position: [0.2, 0.1, 0.5],
+      position: [0.15, 0.05, 0.2],
       targetZoomLevel: ZoomLevel.Micro,
       targetRegion: 'cardiomyocyte',
     },
   ],
   narration: [
+    // === UNTREATED ===
     {
       id: 'tissue-untreated',
       title: 'The Cellular Neighbourhood Under Siege',
-      body: 'At the tissue level, the damage becomes visible. Amyloid fibrils — long, insoluble protein threads — weave between cardiomyocytes (heart muscle cells), physically separating them and disrupting their coordinated contraction. Capillaries are compressed, reducing oxygen delivery. The extracellular matrix, normally a flexible scaffold, becomes rigid with amyloid deposits. The computational model quantifies amyloid burden as a percentage of tissue volume — Edward\'s is at 18%, above the 15% threshold where functional impairment accelerates.',
+      body: 'At the tissue level, the damage becomes visible. Amyloid fibrils — long, insoluble protein threads — weave between cardiomyocytes, physically separating them and disrupting their coordinated contraction. Capillaries are compressed, reducing oxygen delivery. The extracellular matrix becomes rigid with amyloid deposits.',
       phase: 'untreated',
       zoomLevel: ZoomLevel.Tissue,
       timeRange: [0, 12],
@@ -35,18 +36,67 @@ export const heartTissue: ZoomLevelMeta = {
         { term: 'extracellular matrix', definition: 'The structural scaffold between cells — provides support, elasticity, and signalling cues' },
       ],
     },
+
+    // === DRUG — responding ===
     {
-      id: 'tissue-drug',
-      title: 'Treatment Effect at the Tissue Level',
-      body: 'With tafamidis stabilising circulating TTR, the rate of new fibril deposition drops sharply. Existing fibrils persist — the body clears them very slowly, if at all — but no new ones are forming. The computational model shows amyloid volume fraction holding steady at 18% rather than the projected 24% without treatment. Capillary compression stabilises. Cardiomyocytes maintain their contractile function.',
+      id: 'tissue-drug-responding',
+      title: 'Treatment Effect — Fibrils No Longer Growing',
+      body: 'With tafamidis stabilising circulating TTR, the rate of new fibril deposition has dropped sharply. Existing fibrils persist — the body clears them very slowly — but critically, no new ones are forming. The computational model shows amyloid volume fraction holding steady at 18% rather than the projected 24% without treatment. Capillary compression has stabilised. Cardiomyocytes maintain their contractile function.',
       phase: 'drug-administered',
       zoomLevel: ZoomLevel.Tissue,
       timeRange: [12, 36],
+      responseType: 'responding',
+    },
+    // === DRUG — progressing ===
+    {
+      id: 'tissue-drug-progressing',
+      title: 'Treatment Effect — Fibrils Still Accumulating',
+      body: 'Despite tafamidis therapy, amyloid fibrils continue to grow between cardiomyocytes. The drug has slowed — but not stopped — new fibril deposition. The computational model shows amyloid volume fraction rising from 18% toward 22%. Capillaries are increasingly compressed. The muscle fibres are being physically pushed apart, weakening their coordinated contraction. The tissue architecture is progressively deteriorating.',
+      phase: 'drug-administered',
+      zoomLevel: ZoomLevel.Tissue,
+      timeRange: [12, 36],
+      responseType: 'progressing',
+    },
+
+    // === POST — responding ===
+    {
+      id: 'tissue-post-responding',
+      title: 'Tissue Stabilised — Architecture Preserved',
+      body: 'At 12 months, amyloid volume fraction remains at 18% — no increase since treatment began. Cardiomyocytes have adapted to the existing fibril burden. Capillary density has stabilised at 72%. The computational model suggests that over years of continued treatment, natural macrophage-mediated clearance may gradually reduce amyloid burden, though this process is very slow.',
+      phase: 'post-treatment',
+      zoomLevel: ZoomLevel.Tissue,
+      timeRange: [36, 52],
+      responseType: 'responding',
+    },
+    // === POST — progressing ===
+    {
+      id: 'tissue-post-progressing',
+      title: 'Tissue Deterioration — Structural Damage Advancing',
+      body: 'At 12 months, amyloid volume fraction has risen to 26% — well above the critical threshold. Cardiomyocytes are severely compromised: many show signs of atrophy and apoptosis. Capillary density has dropped to 58%. The computational model predicts that without a change in therapy, the remaining muscle fibres will be unable to sustain adequate cardiac output. Alternative therapeutic strategies are being simulated.',
+      phase: 'post-treatment',
+      zoomLevel: ZoomLevel.Tissue,
+      timeRange: [36, 52],
+      responseType: 'progressing',
+      highlights: [
+        { term: 'apoptosis', definition: 'Programmed cell death — cardiomyocytes under prolonged stress activate self-destruction pathways' },
+      ],
     },
   ],
   metrics: [
     { label: 'Amyloid Volume', value: '18%', trend: 'up', contextNote: 'Above 15% threshold for functional impairment' },
     { label: 'Capillary Density', value: '72%', trend: 'down', contextNote: 'Reduced by fibril compression' },
     { label: 'Fibre Alignment', value: 'Disrupted', contextNote: 'Amyloid displacing normal muscle architecture' },
+  ],
+  respondingMetrics: [
+    { label: 'Amyloid Volume', value: '18%', trend: 'stable', contextNote: 'Held steady — no new deposits' },
+    { label: 'Capillary Density', value: '72%', trend: 'stable', contextNote: 'Compression halted' },
+    { label: 'Fibre Alignment', value: 'Stabilised', contextNote: 'No further disruption' },
+    { label: 'New Fibril Rate', value: 'Near zero', trend: 'down', contextNote: 'Treatment blocking formation' },
+  ],
+  progressingMetrics: [
+    { label: 'Amyloid Volume', value: '26%', trend: 'up', contextNote: 'Rising past critical threshold' },
+    { label: 'Capillary Density', value: '58%', trend: 'down', contextNote: 'Severe compression' },
+    { label: 'Fibre Alignment', value: 'Severely disrupted', trend: 'down', contextNote: 'Architecture breaking down' },
+    { label: 'Cell Viability', value: 'Declining', trend: 'down', contextNote: 'Cardiomyocyte atrophy observed' },
   ],
 };

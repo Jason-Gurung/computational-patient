@@ -16,7 +16,7 @@ export const heartCellular: ZoomLevelMeta = {
     {
       id: 'ttr-protein',
       label: 'TTR Protein & Drug Binding',
-      position: [0.5, 0, 0.3],
+      position: [0.3, 0, 0.15],
       targetZoomLevel: ZoomLevel.Micro,
       targetRegion: 'ttr-binding',
     },

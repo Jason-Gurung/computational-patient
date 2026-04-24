@@ -11,7 +11,6 @@ import { PatientTooltip } from './PatientTooltip';
 const MIN_CANVAS_WIDTH = 800;
 
 function getDotSize(cohortSize: number, cols: number) {
-  // Base sizes per cohort range
   let dot: number, gap: number;
   if (cohortSize <= 500) { dot = 12; gap = 3; }
   else if (cohortSize <= 2000) { dot = 8; gap = 2; }
@@ -19,7 +18,6 @@ function getDotSize(cohortSize: number, cols: number) {
   else if (cohortSize <= 50000) { dot = 3; gap = 1; }
   else { dot = 2; gap = 0; }
 
-  // Scale up if the resulting canvas would be smaller than the minimum
   const baseWidth = cols * (dot + gap);
   if (baseWidth < MIN_CANVAS_WIDTH) {
     const scale = MIN_CANVAS_WIDTH / baseWidth;
@@ -56,6 +54,7 @@ export function PatientGrid({ currentWeek, activeFilters, cohortSize }: PatientG
   const [hoveredPatient, setHoveredPatient] = useState<PopulationPatient | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const animFrameRef = useRef<number>(0);
+  const startTimeRef = useRef<number>(0);
 
   const hasFilters = activeFilters.length > 0;
 
@@ -75,13 +74,16 @@ export function PatientGrid({ currentWeek, activeFilters, cohortSize }: PatientG
     return map;
   }, []);
 
-  const draw = useCallback(() => {
+  // Continuous draw loop for pulsing clickable patients
+  const drawRef = useRef<() => void>();
+  drawRef.current = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const { cols, dot, cell, canvasW, canvasH } = gridParams;
+    const now = performance.now() / 1000;
 
     ctx.clearRect(0, 0, canvasW, canvasH);
 
@@ -96,28 +98,38 @@ export function PatientGrid({ currentWeek, activeFilters, cohortSize }: PatientG
 
       const dimmed = hasFilters && !activeFilters.includes(outcome);
 
-      ctx.globalAlpha = dimmed ? 0.08 : 1;
-      ctx.fillStyle = outcomeColorHex[outcome];
-
       if (p.isClickable) {
+        // Gentle pulse: oscillate opacity between 0.4 and 1.0
+        // Each clickable patient has a slight phase offset for visual interest
+        const phase = i * 0.7;
+        const pulse = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(now * 2.5 + phase));
+        const ringPulse = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(now * 2.5 + phase));
+        const baseAlpha = dimmed ? 0.12 : pulse;
+
         ctx.save();
+        ctx.globalAlpha = baseAlpha;
+        ctx.fillStyle = outcomeColorHex[outcome];
+
         if (!dimmed) {
           ctx.shadowColor = outcomeColorHex[outcome];
-          ctx.shadowBlur = 10;
+          ctx.shadowBlur = 12 + 4 * Math.sin(now * 2.5 + phase);
         }
         ctx.beginPath();
         ctx.arc(x + dot / 2, y + dot / 2, dot / 2 + 1, 0, Math.PI * 2);
         ctx.fill();
 
+        // Outer ring
         ctx.shadowBlur = 0;
-        ctx.globalAlpha = dimmed ? 0.1 : 0.7;
+        ctx.globalAlpha = dimmed ? 0.08 : ringPulse * 0.7;
         ctx.strokeStyle = '#ECEFF1';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.arc(x + dot / 2, y + dot / 2, dot / 2 + 2.5, 0, Math.PI * 2);
+        ctx.arc(x + dot / 2, y + dot / 2, dot / 2 + 2.5 + Math.sin(now * 2.5 + phase) * 0.5, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
       } else {
+        ctx.globalAlpha = dimmed ? 0.08 : 1;
+        ctx.fillStyle = outcomeColorHex[outcome];
         ctx.beginPath();
         ctx.roundRect(x, y, dot, dot, 1);
         ctx.fill();
@@ -125,13 +137,24 @@ export function PatientGrid({ currentWeek, activeFilters, cohortSize }: PatientG
     }
 
     ctx.globalAlpha = 1;
-  }, [currentWeek, activeFilters, hasFilters, outcomeColorHex, cohortSize, gridParams]);
+  };
 
   useEffect(() => {
-    cancelAnimationFrame(animFrameRef.current);
-    animFrameRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(animFrameRef.current);
-  }, [draw]);
+    startTimeRef.current = performance.now();
+    let running = true;
+
+    function loop() {
+      if (!running) return;
+      drawRef.current?.();
+      animFrameRef.current = requestAnimationFrame(loop);
+    }
+    loop();
+
+    return () => {
+      running = false;
+      cancelAnimationFrame(animFrameRef.current);
+    };
+  }, [currentWeek, activeFilters, hasFilters, outcomeColorHex, cohortSize, gridParams]);
 
   const getPatientAtPos = useCallback((clientX: number, clientY: number): PopulationPatient | null => {
     const canvas = canvasRef.current;
@@ -191,10 +214,11 @@ export function PatientGrid({ currentWeek, activeFilters, cohortSize }: PatientG
       )}
       <div className="mt-2 flex items-center justify-between">
         <span className="text-xs text-kz-text-tertiary">
-          {cohortSize.toLocaleString()} virtual patients — 3 explorable
+          {cohortSize.toLocaleString()} virtual patients
         </span>
         <span className="text-xs text-kz-text-tertiary">
-          {gridParams.cols} &times; {gridParams.rows} grid
+          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-kz-cyan" />{' '}
+          3 pulsing dots are explorable — click to enter body explorer
         </span>
       </div>
     </div>

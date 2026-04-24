@@ -1,6 +1,6 @@
 # Agent F — Blender 3D Models (Handoff / Continuation)
 
-> You are continuing work that a previous Agent F session completed. Read this entire handoff before doing anything.
+> You are continuing work that previous Agent F sessions completed. Read this entire handoff before doing anything.
 
 ## Project Context
 
@@ -8,26 +8,38 @@ This is a **vision pitch demo for Pfizer** called "The Computational Patient" �
 
 **Visual style: Kurzgesagt** (the YouTube channel) — stylised, low-poly, bold vivid colours on dark backgrounds. NOT photorealistic. Smooth shapes, flat shading or gentle gradients, bright saturated colours. Friendly but scientific.
 
-## What Was Already Done
+## What Exists Now — 16 Model Files
 
-All 6 models were created in two iterations:
+All files live at `app/public/assets/models/custom/`.
 
-### v1 (superseded) — Blender primitives only
-- Too crude/basic — looked like raw geometric shapes, not Kurzgesagt quality
+### Base models (untreated/sick state)
 
-### v2 (current, in production) — Sketchfab open-source bases + Kurzgesagt restyle
-All 6 .glb files are exported and live at `app/public/assets/models/custom/`:
+| Model | File | Size | Description |
+|-------|------|------|-------------|
+| Full Body | `full-body.glb` | 1.7M | Sketchfab low-poly male, cyan translucent. Organs inside: pink heart, cyan lungs, brown liver, green stomach, red kidneys, purple brain, teal spine |
+| Chest Anatomy | `heart-anatomical.glb` | 452K | **v3 restyled** — ghostly teal ribcage (15% decimated, alpha=0.18), pink glowing heart, translucent cyan lungs, 10 purple amyloid deposits on heart surface |
+| Heart Organ | `heart-organ.glb` | 1.1M | Sketchfab heart (29K faces), warm red with emission. 12 purple amyloid deposits (enlarged, emission=1.5) |
+| Cardiac Tissue | `heart-tissue.glb` | 1.9M | Built from scratch. 15 muscle fibres with sarcomere bands, 25 thickened amyloid fibrils (emission=2.0), 4 capillaries, teal ECM wireframe |
+| Cardiomyocyte | `heart-cellular.glb` | 2.8M | Sketchfab animal cell restyled. 10 amyloid fibril cylinders + 5 amyloid clumps pressing against cell exterior |
+| TTR Protein | `heart-micro.glb` | 2.9M | Sketchfab receptor restyled as TTR. Bright green drug (tafamidis). 3 orange misfolded monomers. 8-sphere purple protofibril chain |
 
-| Model | File | Size | Source & Notes |
-|-------|------|------|----------------|
-| Full Body | `full-body.glb` | 1.7M | Sketchfab low-poly male (3.7K faces), cyan translucent. Organs inside: pink heart, cyan lungs, brown liver, green stomach, red kidneys, purple brain, teal spine |
-| Chest Anatomy | `heart-anatomical.glb` | 2.3M | Sketchfab anatomy torso, open chest with ribs/heart/lungs. Original texture kept, saturation boosted 2.5×, emission added |
-| Heart Organ | `heart-organ.glb` | 1.1M | Sketchfab detailed heart (29K faces) by sv1nks. Bold saturated red + emission. 7 purple amyloid deposits shrinkwrapped to surface |
-| Cardiac Tissue | `heart-tissue.glb` | 1.8M | Built from scratch. 15 muscle fibres with sarcomere bands, 25 glowing purple amyloid fibrils, 4 capillaries (red/blue), teal ECM wireframe |
-| Cardiomyocyte | `heart-cellular.glb` | 2.8M | Sketchfab animal cell by LauriPurhonen (99K faces). 11 materials restyled: cyan membrane, pink nucleus, gold Golgi, green mitochondria, blue ER |
-| TTR Protein | `heart-micro.glb` | 2.8M | Sketchfab GABA-A receptor by axonology (252K→135K faces decimated). Subunits: alpha→cyan, beta→teal, gamma→purple. Ligand→bright green (tafamidis drug) |
+### Time-progression variants
 
-**Total: ~11MB.** All materials use bold colours with emission for glow. All models centred at origin. Sketchfab models are CC Attribution licensed.
+Each zoom level (except full body) has two variants for disease progression over time:
+
+| Model | Responding (drug works) | Progressing (drug fails) |
+|-------|------------------------|-------------------------|
+| Chest | `heart-anatomical-responding.glb` (426K) | `heart-anatomical-progressing.glb` (469K) |
+| Heart Organ | `heart-organ-responding.glb` (1.0M) | `heart-organ-progressing.glb` (1.1M) |
+| Tissue | `heart-tissue-responding.glb` (1.6M) | `heart-tissue-progressing.glb` (1.9M) |
+| Cellular | `heart-cellular-responding.glb` (2.8M) | `heart-cellular-progressing.glb` (2.9M) |
+| Micro | `heart-micro-responding.glb` (2.9M) | `heart-micro-progressing.glb` (2.9M) |
+
+**What changes between variants:**
+
+- **Base (`.glb`)** = untreated disease state. Moderate amyloid deposits, disease clearly visible.
+- **Responding (`-responding.glb`)** = drug is working, disease improving. Fewer/smaller/fading amyloid (semi-transparent, dim emission). Healthier tissue colours (brighter reds). Green drug molecule indicators on organ model.
+- **Progressing (`-progressing.glb`)** = drug failed, disease worsening. More/larger/angrier amyloid (darker purple, intense emission). Duller/darker tissue. Extra misfolded monomers and longer protofibril chain at micro level. Drug molecules dimmed/greyed out at micro level.
 
 ## Colour Palette
 
@@ -45,11 +57,11 @@ These are the exact Kurzgesagt-inspired colours used across the whole app:
 ## The 6 Zoom Levels (what each model represents)
 
 1. **Full Body** — Translucent human figure with visible organs. Heart glows to indicate disease site.
-2. **Chest Anatomy** — Ribcage, heart, lungs, major blood vessels. Clean, stylised, not gory.
+2. **Chest Anatomy** — Ghostly ribcage, heart, lungs, major blood vessels. Clean, stylised, NOT gory.
 3. **Heart Organ** — 4-chambered heart with valves, coronary arteries, amyloid deposits (the disease).
 4. **Cardiac Tissue** — Cross-section of muscle fibres with amyloid fibrils between them, capillaries, extracellular matrix.
-5. **Single Cardiomyocyte** — One heart muscle cell showing nucleus, mitochondria, sarcomeres, intercalated disc, amyloid fibrils pressing from outside.
-6. **TTR Protein & Drug** — TTR tetramer (4 subunits), binding pockets, tafamidis drug molecule, misfolded monomers, amyloid protofibril chain.
+5. **Single Cardiomyocyte** — One heart muscle cell showing nucleus, mitochondria, sarcomeres, with amyloid fibrils pressing from outside.
+6. **TTR Protein & Drug** — TTR tetramer (receptor base), binding pockets, tafamidis drug molecule (green), misfolded monomers (orange), amyloid protofibril chain (purple).
 
 ## Disease Context
 
@@ -78,5 +90,10 @@ The user may want to:
 - **Adjust materials/colours** to better match the palette
 - **Reduce file sizes** if models are too heavy
 - **Add visual details** like more amyloid deposits, better drug visualisation, etc.
+- **Create models for other body regions** (lungs/Lorbrena, joints/Xeljanz — see PROJECT-BRIEF.md for priority list)
 
-Ask the user what they'd like to change before starting work.
+## What Was Done in This Session
+
+1. **Restyled `heart-anatomical.glb`** — was too realistic/gory. Now has ghostly low-poly ribcage, clean Kurzgesagt style. Shrunk from 2.3M to 452K.
+2. **Enhanced disease visibility** across all 5 disease models — bigger/brighter amyloid deposits, better colour contrast, added missing disease elements (fibrils on cellular, monomers on micro).
+3. **Created 10 time-progression variants** — responding (drug works) and progressing (drug fails) for each zoom level except full body.

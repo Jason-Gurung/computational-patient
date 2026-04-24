@@ -1,3 +1,5 @@
+export type TreatmentResponse = 'responding' | 'progressing';
+
 export interface PatientProfile {
   id: string;
   name: string;
@@ -8,6 +10,7 @@ export interface PatientProfile {
   bmi: number;
   ancestry: string;
   isGenerated: boolean;
+  treatmentResponse: TreatmentResponse;
 
   genomicHighlights: GenomicHighlight[];
   organFunction: OrganFunction;

@@ -10,6 +10,8 @@ export interface NarrationContent {
   zoomLevel: ZoomLevel;
   timeRange: [number, number];
   highlights?: NarrationHighlight[];
+  /** If set, this narration only shows for patients with this treatment response */
+  responseType?: 'responding' | 'progressing';
 }
 
 export interface NarrationHighlight {

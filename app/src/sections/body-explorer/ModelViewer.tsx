@@ -7,21 +7,39 @@ import { HEART_ZOOM_LEVELS } from '@/data/body-explorer/heart-attr-cm';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const MODEL_PATHS = HEART_ZOOM_LEVELS.map((l) => `${base}${l.modelPath}`);
 
+export type ModelVariant = 'base' | 'responding' | 'progressing';
+
 export interface ModelBounds {
   center: THREE.Vector3;
   radius: number;
 }
 
-interface ModelViewerProps {
-  zoomIndex: number;
-  onModelReady?: (bounds: ModelBounds) => void;
+/**
+ * Compute the model path for a given zoom level and variant.
+ * Full body (index 0) has no variants — always returns the base path.
+ * For other levels, appends -responding or -progressing before .glb.
+ */
+function getVariantPath(zoomIndex: number, variant: ModelVariant): string {
+  const basePath = MODEL_PATHS[zoomIndex] ?? MODEL_PATHS[0];
+  if (variant === 'base' || zoomIndex === 0) return basePath;
+  // e.g. /assets/models/custom/heart-organ.glb → heart-organ-responding.glb
+  return basePath.replace(/\.glb$/, `-${variant}.glb`);
 }
 
-export function ModelViewer({ zoomIndex, onModelReady }: ModelViewerProps) {
-  const path = MODEL_PATHS[zoomIndex] ?? MODEL_PATHS[0];
+interface ModelViewerProps {
+  zoomIndex: number;
+  variant?: ModelVariant;
+  onModelReady?: (bounds: ModelBounds) => void;
+  children?: React.ReactNode;
+}
+
+export function ModelViewer({ zoomIndex, variant = 'base', onModelReady, children }: ModelViewerProps) {
+  const path = getVariantPath(zoomIndex, variant);
   return (
     <Suspense fallback={<LoadingSpinner />}>
-      <GLTFModel key={path} path={path} onModelReady={onModelReady} />
+      <GLTFModel key={path} path={path} onModelReady={onModelReady}>
+        {children}
+      </GLTFModel>
     </Suspense>
   );
 }
@@ -37,13 +55,10 @@ function stripBlenderArtifacts(root: THREE.Object3D) {
   const toRemove: THREE.Object3D[] = [];
 
   root.traverse((child) => {
-    // Match by name
     if (STRIP_PATTERN.test(child.name)) {
       toRemove.push(child);
       return;
     }
-
-    // Detect grid-like meshes: very flat (one axis near-zero) and large area
     if (child instanceof THREE.Mesh && child.geometry) {
       child.geometry.computeBoundingBox();
       const box = child.geometry.boundingBox;
@@ -51,14 +66,11 @@ function stripBlenderArtifacts(root: THREE.Object3D) {
         const size = new THREE.Vector3();
         box.getSize(size);
         const dims = [size.x, size.y, size.z].sort((a, b) => a - b);
-        // If the thinnest axis is <1% of the widest, it's likely a flat plane/grid
         if (dims[0] < dims[2] * 0.01 && dims[2] > 1) {
           toRemove.push(child);
         }
       }
     }
-
-    // Also strip GridHelper instances
     if (child instanceof THREE.GridHelper) {
       toRemove.push(child);
     }
@@ -69,12 +81,11 @@ function stripBlenderArtifacts(root: THREE.Object3D) {
   }
 }
 
-function GLTFModel({ path, onModelReady }: { path: string; onModelReady?: (bounds: ModelBounds) => void }) {
+function GLTFModel({ path, onModelReady, children }: { path: string; onModelReady?: (bounds: ModelBounds) => void; children?: React.ReactNode }) {
   const { scene } = useGLTF(path);
   const group = useRef<THREE.Group>(null);
 
   useEffect(() => {
-    // Strip Blender artifacts before computing bounds
     stripBlenderArtifacts(scene);
 
     if (!group.current || !onModelReady) return;
@@ -92,6 +103,7 @@ function GLTFModel({ path, onModelReady }: { path: string; onModelReady?: (bound
   return (
     <group ref={group}>
       <primitive object={scene} />
+      {children}
     </group>
   );
 }
@@ -118,5 +130,10 @@ function LoadingSpinner() {
   );
 }
 
-// Preload all models for smooth transitions
+// Preload base models
 MODEL_PATHS.forEach((p) => useGLTF.preload(p));
+// Preload variants for smooth transitions
+for (let i = 1; i < MODEL_PATHS.length; i++) {
+  useGLTF.preload(MODEL_PATHS[i].replace(/\.glb$/, '-responding.glb'));
+  useGLTF.preload(MODEL_PATHS[i].replace(/\.glb$/, '-progressing.glb'));
+}

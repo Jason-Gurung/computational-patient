@@ -10,6 +10,7 @@ export const patient003: PatientProfile = {
   bmi: 28.4,
   ancestry: 'West African',
   isGenerated: true,
+  treatmentResponse: 'progressing',
 
   genomicHighlights: [
     {

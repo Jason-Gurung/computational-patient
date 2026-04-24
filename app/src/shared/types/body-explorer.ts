@@ -18,6 +18,8 @@ export interface ZoomLevelMeta {
   hotspots: Hotspot[];
   narration: NarrationContent[];
   metrics: ZoomMetric[];
+  respondingMetrics?: ZoomMetric[];
+  progressingMetrics?: ZoomMetric[];
 }
 
 export interface CameraConfig {

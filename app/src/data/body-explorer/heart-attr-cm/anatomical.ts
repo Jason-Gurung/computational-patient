@@ -16,7 +16,7 @@ export const heartAnatomical: ZoomLevelMeta = {
     {
       id: 'heart-organ',
       label: 'Heart',
-      position: [-0.3, 3.5, 0.8],
+      position: [-0.1, 0, 0.2],
       targetZoomLevel: ZoomLevel.Organ,
       targetRegion: 'heart',
     },

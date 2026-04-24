@@ -31,18 +31,66 @@ Blender Agent (F) will update this section when models are exported:
 
 | Model | File | Status |
 |-------|------|--------|
-| Full Body | `public/assets/models/custom/full-body.glb` | **ready v2** (201K) — Sketchfab low-poly body + organs |
-| Heart Anatomical | `public/assets/models/custom/heart-anatomical.glb` | **ready v2** (2.3M) — Sketchfab torso, saturation boosted |
-| Heart Organ | `public/assets/models/custom/heart-organ.glb` | **ready v2** (1.1M) — Sketchfab heart + amyloid deposits |
-| Heart Tissue | `public/assets/models/custom/heart-tissue.glb` | **ready v2** (1.8M) — Rebuilt with bold materials |
-| Heart Cellular | `public/assets/models/custom/heart-cellular.glb` | **ready v2** (2.8M) — Sketchfab cell, Kurzgesagt restyled |
-| Heart Micro | `public/assets/models/custom/heart-micro.glb` | **ready v2** (2.8M) — Sketchfab receptor, restyled as TTR |
+| Full Body | `public/assets/models/custom/full-body.glb` | **ready v2** (1.8M) — Sketchfab low-poly body + organs |
+| Heart Anatomical | `public/assets/models/custom/heart-anatomical.glb` | **ready v3** (452K) — Restyled Kurzgesagt: ghostly teal ribcage, pink heart, cyan lungs, 10 purple amyloid deposits |
+| Heart Organ | `public/assets/models/custom/heart-organ.glb` | **ready v3** (1.1M) — Enhanced: darker red heart, 12 enlarged purple amyloid deposits with emission=1.5 |
+| Heart Tissue | `public/assets/models/custom/heart-tissue.glb` | **ready v3** (1.9M) — Enhanced: thicker amyloid fibrils (1.8x), vivid purple emission=2.0, darker muscle contrast |
+| Heart Cellular | `public/assets/models/custom/heart-cellular.glb` | **ready v3** (2.9M) — Added 10 amyloid fibrils + 5 clumps pressing against cell exterior |
+| Heart Micro | `public/assets/models/custom/heart-micro.glb` | **ready v3** (3.0M) — Added 3 orange misfolded monomers, 8-sphere purple protofibril chain, brighter green drug |
 
-Agent D (Body Explorer): check this table before defaulting to placeholders. If a model shows "ready", load the .glb instead.
+**Time-progression variants** (responding = drug working, progressing = drug failing):
+
+| Model | Responding File | Progressing File |
+|-------|----------------|-----------------|
+| Heart Anatomical | `heart-anatomical-responding.glb` (426K) | `heart-anatomical-progressing.glb` (469K) |
+| Heart Organ | `heart-organ-responding.glb` (1.0M) | `heart-organ-progressing.glb` (1.1M) |
+| Heart Tissue | `heart-tissue-responding.glb` (1.6M) | `heart-tissue-progressing.glb` (1.9M) |
+| Heart Cellular | `heart-cellular-responding.glb` (2.8M) | `heart-cellular-progressing.glb` (2.9M) |
+| Heart Micro | `heart-micro-responding.glb` (2.9M) | `heart-micro-progressing.glb` (2.9M) |
+
+Agent D (Body Explorer): Load the base `.glb` for untreated/sick state, swap to `-responding.glb` when drug is working (post-treatment success), or `-progressing.glb` when drug fails (post-treatment failure). The base model = untreated disease state. Full body stays the same across all phases.
 
 ---
 
 ## Log Entries
+
+### [Agent D] Body Explorer — Orbit controls, auto-framing, model variants, UI fixes — 2026-04-24
+Status: completed
+What I built:
+- **OrbitControls** — Replaced custom CameraController with drei OrbitControls. Users can drag-rotate, scroll-zoom, right-drag-pan the 3D models. Smooth animated transitions between zoom levels (controls temporarily disabled during animation).
+- **Auto-framing camera** — On model load, computes bounding sphere via `Box3.setFromObject()` + `getBoundingSphere()`. Camera distance auto-computed from model radius + FOV so every model fills the viewport regardless of native scale. Viewing angle preserved from authored data configs. Bounds reset on zoom level change.
+- **Blender artifact stripping** — `stripBlenderArtifacts()` traverses loaded GLTF scenes and removes grid planes, floor objects, stray cameras/lights by name pattern and by detecting geometrically flat meshes (<1% thickness ratio).
+- **Time-progression model swapping** — Integrated Agent F's responding/progressing model variants. Added `ModelVariant` type (`'base' | 'responding' | 'progressing'`). `getVariantPath()` appends `-responding` or `-progressing` to base model path. Full body (index 0) has no variants. All 10 variant models preloaded via `useGLTF.preload()`.
+- **Patient treatment response** — Added `treatmentResponse: 'responding' | 'progressing'` to `PatientProfile` type. Patient 001 (Edward Voss) = responding, Patients 002 (Marcus Chen) + 003 (Adewale Okafor) = progressing. Body explorer reads patient's response + simulation week to choose model variant: base for weeks 0-11 (untreated), then responding/progressing for weeks 12+.
+- **Hotspot fixes** — Positions changed to normalized offsets (-1 to 1) scaled by model bounding radius at runtime. Hotspots render inside the rotating model group so they track rotation. Fixed marker size (was scaling with model radius, causing giant orbs on large models).
+- **UI layout fixes** — Top bar: merged back link + breadcrumb into single row. Right panel narrowed from w-80 to w-72. Patient sidebar narrowed to w-64. Scene fog pushed out (40-120) and far plane extended to 500.
+- **Patient gender update** — All 3 explorable patients changed to male (Eleanor Voss → Edward Voss, Adaeze Okafor → Adewale Okafor). All narration text updated (pronouns, descriptors). Tooltip data updated.
+- **Population grid improvements** — Dynamic canvas scaling: small cohorts (e.g. 100 patients) now render at minimum 800px canvas width by scaling up dot/gap sizes, preventing blurry upscaling. Outcome history staggered: patients get random onset weeks (0-39) so the grid has color variety from week 0 instead of all-blue.
+What I exported/shared: `ModelVariant` type, `ModelBounds` interface from `ModelViewer.tsx`. `TreatmentResponse` type added to `@/shared/types/patient.ts`.
+Dependencies: Agent F's 10 variant .glb files (all confirmed present in `public/assets/models/custom/`).
+Notes for other agents: The body explorer now shows visually different 3D models depending on which patient you click from the population grid and where you are on the treatment timeline. Patient 001 (responding) shows healthier tissue/fewer deposits after week 12. Patients 002/003 (progressing) show worsening disease. Full body model stays the same for all phases.
+
+### [Agent F] Time-progression model variants — 2026-04-24 19:16
+Status: completed
+What I built: 10 new model variants for time-based disease progression (2 per zoom level × 5 zoom levels).
+- **Responding variants** (drug works, getting better): fewer/smaller/fading amyloid deposits, healthier tissue colors, brighter green drug molecules where applicable
+- **Progressing variants** (drug fails, getting worse): more/larger/angrier amyloid deposits, darker/duller tissue, more misfolded monomers, longer protofibril chains
+- Base models (`.glb`) remain the untreated/sick state
+What I exported/shared: 10 new .glb files in `public/assets/models/custom/`. Total additional ~19MB.
+Dependencies: Agent D needs to update Body Explorer to swap models based on treatment phase timeline.
+Notes for other agents: The naming convention is `heart-{level}-responding.glb` and `heart-{level}-progressing.glb`. Full body model has no variants — it stays the same. The responding variants have green DrugEffect material spheres (small glowing green dots) on the organ model to show drug molecules at work.
+
+### [Agent F] v3 Models — Disease visibility + chest restyle — 2026-04-24 19:00
+Status: completed
+What I built: Addressed user feedback — chest model was too realistic/gory and disease wasn't visible enough across zoom levels.
+- **heart-anatomical.glb** (452K, was 2.3M) — Complete restyle: ribcage decimated to 15% + smoothed for ghostly low-poly look (alpha=0.18, teal-white), lungs decimated + translucent cyan, heart is pink focal point with emission. 10 purple amyloid deposits (5 original + 5 new ico spheres on heart surface). Not gory at all now.
+- **heart-organ.glb** (1.1M) — Heart material darkened to rich red. Amyloid deposits enlarged 2-3x and increased to 12 total (7 original + 5 new). Amyloid emission boosted to 1.5 with vivid purple.
+- **heart-tissue.glb** (1.9M) — All 25 amyloid fibrils thickened 1.8x in radius. AmyloidPurple emission boosted to 2.0. Muscle materials darkened for better contrast.
+- **heart-cellular.glb** (2.9M) — Added 10 amyloid fibril cylinders + 5 amyloid clumps (ico spheres) pressed against cell membrane from outside. New AmyloidCellular material (vivid purple, emission=1.5).
+- **heart-micro.glb** (3.0M) — Added 3 orange MisfoldedTTR monomers (irregular stretched shapes). Added 8-sphere purple amyloid protofibril chain with connecting cylinders. Drug (Shape) materials boosted to bright green emission=1.5.
+What I exported/shared: All .glb files updated in `public/assets/models/custom/`. Total ~11MB.
+Dependencies: None.
+Notes for other agents: v3 models have much more prominent disease visualization at every zoom level. Materials use strong emission values that will glow in Three.js with dark backgrounds. The chest model is now 452K (was 2.3M) due to geometry simplification — much faster to load.
 
 ### [Cross-agent] Trial Config Flows to Population View — 2026-04-24 23:30
 Status: completed

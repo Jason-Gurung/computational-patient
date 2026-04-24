@@ -9,7 +9,7 @@ import type { CameraConfig } from '@/shared/types';
 import { Scene } from './Scene';
 import { CameraController } from './CameraController';
 import { ModelViewer } from './ModelViewer';
-import type { ModelBounds } from './ModelViewer';
+import type { ModelBounds, ModelVariant } from './ModelViewer';
 import { HotspotOverlay } from './HotspotOverlay';
 import { ZoomBreadcrumb } from './ZoomBreadcrumb';
 import { ZoomLevelIndicator } from './ZoomLevelIndicator';
@@ -54,13 +54,26 @@ export default function BodyExplorerPage() {
 
   const currentLevel = HEART_ZOOM_LEVELS[zoomIndex];
 
+  // Determine which model variant to show based on patient response + timeline
+  const modelVariant: ModelVariant = useMemo(() => {
+    if (!patient || simState.currentWeek < 12) return 'base'; // untreated phase
+    return patient.treatmentResponse; // 'responding' or 'progressing'
+  }, [patient, simState.currentWeek]);
+
   const cameraConfig = useMemo(() => {
     if (!modelBounds) return currentLevel.cameraPosition;
     return autoFrameCamera(currentLevel.cameraPosition, modelBounds);
   }, [currentLevel.cameraPosition, modelBounds]);
 
   const handleModelReady = useCallback((bounds: ModelBounds) => {
-    setModelBounds(bounds);
+    setModelBounds((prev) => {
+      // Skip update if bounds are similar (variant swap, not zoom change)
+      // This prevents camera from resetting when model variant changes
+      if (prev && Math.abs(prev.radius - bounds.radius) / prev.radius < 0.3) {
+        return prev;
+      }
+      return bounds;
+    });
   }, []);
 
   const handleNavigate = useCallback(
@@ -92,14 +105,16 @@ export default function BodyExplorerPage() {
       {/* 3D Canvas — full viewport */}
       <Scene>
         <CameraController config={cameraConfig} />
-        <ModelViewer zoomIndex={zoomIndex} onModelReady={handleModelReady} />
-        {currentLevel.hotspots.length > 0 && (
-          <HotspotOverlay
-            hotspots={currentLevel.hotspots}
-            onNavigate={handleNavigate}
-            currentZoomIndex={zoomIndex}
-          />
-        )}
+        <ModelViewer zoomIndex={zoomIndex} variant={modelVariant} onModelReady={handleModelReady}>
+          {currentLevel.hotspots.length > 0 && (
+            <HotspotOverlay
+              hotspots={currentLevel.hotspots}
+              onNavigate={handleNavigate}
+              currentZoomIndex={zoomIndex}
+              modelBounds={modelBounds}
+            />
+          )}
+        </ModelViewer>
       </Scene>
 
       {/* Top bar — Back link + Breadcrumb, single row */}
