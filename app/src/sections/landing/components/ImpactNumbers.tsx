@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
 import { useScrollReveal } from '@/shared/hooks';
 import { slideUp, staggerContainer, fadeIn } from '@/shared/design-tokens';
 import { landingContent } from '@/data/content';
 
 /* ------------------------------------------------------------------ */
-/*  Animated number — counts from startVal to endVal on scroll reveal */
+/*  Animated number — counts up on scroll reveal                      */
 /* ------------------------------------------------------------------ */
 
 function AnimatedText({
@@ -21,7 +20,6 @@ function AnimatedText({
   const [display, setDisplay] = useState(text);
   const [started, setStarted] = useState(false);
 
-  // Extract numeric value for counting animation
   const numMatch = text.match(/([\d,.]+)/);
   const hasNumber = numMatch !== null;
   const numericVal = hasNumber ? parseFloat(numMatch[1].replace(/,/g, '')) : 0;
@@ -44,7 +42,6 @@ function AnimatedText({
         return;
       }
       const progress = Math.min(elapsed / duration, 1);
-      // Ease out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = eased * numericVal;
       const formatted = hasDecimal
@@ -100,20 +97,19 @@ export function ImpactNumbers() {
                 {item.label}
               </p>
 
-              {/* Before → After */}
-              <div className="flex items-center justify-center gap-3">
-                <span className="text-xl font-bold text-kz-text-secondary line-through decoration-kz-pink/60">
-                  <AnimatedText text={item.before} inView={inView} delay={i * 120} />
+              {/* Current state */}
+              <div className="mb-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">
+                  Today
                 </span>
-                <ArrowRight size={16} className="text-kz-text-tertiary" />
-                <span className="text-2xl font-bold text-kz-green">
-                  <AnimatedText text={item.after} inView={inView} delay={i * 120 + 300} />
-                </span>
+                <p className="mt-1 text-2xl font-bold text-kz-text-primary">
+                  <AnimatedText text={item.current} inView={inView} delay={i * 120} />
+                </p>
               </div>
 
-              {/* Savings badge */}
-              <p className="mt-4 inline-block rounded-lg bg-kz-green/10 px-3 py-1 text-xs font-semibold text-kz-green">
-                {item.savings}
+              {/* Improvement */}
+              <p className="inline-block rounded-lg bg-kz-green/10 px-3 py-1 text-sm font-semibold text-kz-green">
+                {item.improvement}
               </p>
             </motion.div>
           ))}

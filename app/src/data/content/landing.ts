@@ -29,9 +29,9 @@ export const landingContent = {
   ],
 
   impactNumbers: [
-    { label: 'Drug Development Timeline', before: '10-15 years', after: '6-9 years', savings: '40% reduction' },
-    { label: 'Average Trial Cost', before: '$2.6B', after: '$1.4B', savings: '46% reduction' },
-    { label: 'Phase II Success Rate', before: '28%', after: '52%', savings: '1.9x improvement' },
-    { label: 'Required Trial Participants', before: '3,000+', after: '800-1,200', savings: '60-73% fewer' },
+    { label: 'Drug Development Timeline', current: '10-15 years', improvement: 'Dramatically shorter' },
+    { label: 'Average Trial Cost', current: '$2.6B', improvement: 'Substantially reduced' },
+    { label: 'Phase II Success Rate', current: '28%', improvement: 'Significantly higher' },
+    { label: 'Required Trial Participants', current: '3,000+', improvement: 'A fraction of today' },
   ],
 } as const;
