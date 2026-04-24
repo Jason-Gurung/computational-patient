@@ -4,7 +4,8 @@ import { useScrollReveal } from '@/shared/hooks';
 import { slideUp, staggerContainer } from '@/shared/design-tokens';
 import { landingContent } from '@/data/content';
 
-const ICON_MAP: Record<string, React.ElementType> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ICON_MAP: Record<string, React.ComponentType<any>> = {
   dna: Dna,
   shield: Shield,
   'trending-up': TrendingUp,

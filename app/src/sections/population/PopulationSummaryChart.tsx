@@ -88,9 +88,9 @@ export function PopulationSummaryChart({ currentWeek, cohortSize }: PopulationSu
               fontSize: 12,
               color: colors.text.primary,
             }}
-            formatter={(value: number, name: string) => [
+            formatter={(value: unknown, name: unknown) => [
               `${value}%`,
-              OUTCOME_LABELS[name as PatientOutcome] ?? name,
+              OUTCOME_LABELS[name as PatientOutcome] ?? String(name),
             ]}
           />
           <ReferenceLine
