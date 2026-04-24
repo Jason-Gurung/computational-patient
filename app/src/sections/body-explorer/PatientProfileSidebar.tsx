@@ -12,7 +12,7 @@ export function PatientProfileSidebar({ patient, isDeepZoom }: PatientProfileSid
   const shouldCollapse = collapsed || isDeepZoom;
 
   return (
-    <div className={`absolute left-4 top-16 z-10 transition-all duration-300 ${shouldCollapse ? 'w-10' : 'w-72'}`}>
+    <div className={`absolute left-4 top-14 z-10 transition-all duration-300 ${shouldCollapse ? 'w-10' : 'w-64'}`}>
       {/* Collapse toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}

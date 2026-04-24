@@ -4,7 +4,7 @@
 
 ## What If We Could Test Every Drug on Every Human — Without Touching a Single Person?
 
-Clinical trials are the most expensive, slowest, and most failure-prone process in the modern economy. It takes 10-15 years and $1-2 billion to bring a single drug to market. 90% of candidates fail. The worst failures come last — a Phase III collapse costs $200-300M and years of wasted effort.
+Clinical trials are the most expensive, slowest, and most failure-prone process in the modern economy. It takes years and enormous capital to bring a single drug to market. Most candidates fail. The worst failures come last — a late-stage collapse costs years of effort and vast sums of money.
 
 The fundamental problem: **we can't know how a drug will behave in a human body until we put it in a human body.**
 
@@ -46,4 +46,4 @@ archive/
 
 5. **The organisation does more with less.** Smaller trials, shorter timelines, model-driven decisions — every efficiency compounds across the org. Fewer people, greater output.
 
-The result: drugs developed in 6-9 years instead of 15. At a fraction of the cost. With higher success rates. A leaner, faster organisation. And a growing competitive moat that deepens with every program.
+The result: drugs developed dramatically faster, at a fraction of the cost, with significantly higher success rates. A leaner, faster organisation. And a growing competitive moat that deepens with every program.

@@ -100,15 +100,14 @@ When you can simulate a clinical trial in days instead of running it over years,
 
 ## The Scale of Impact
 
-| Metric | Current Reality | With Computational Patients |
-|--------|----------------|---------------------------|
-| Time to market | 10-15 years | 6-9 years |
-| Cost per approved drug | $1-2B | $500M-$1B |
-| Phase II success rate | ~30% | ~50-60% |
-| Phase III success rate | ~50% | ~70-80% |
-| Late-stage failure cost | $200-300M per failure | Most failures caught pre-Phase I |
-| Patient trial burden | Millions enrolled globally | 50-70% smaller trials needed |
-| Rare disease feasibility | Often impossible (too few patients) | Fully simulatable |
-| Personalised dosing | One-size-fits-all | Patient-archetype optimised |
+Every dimension of drug development improves:
 
-The financial impact alone is staggering — preventing 2-3 Phase III failures per decade saves $500M-$1B. Compressing timelines by 4-6 years means drugs reach patients faster and generate revenue sooner. Dramatically lower headcount requirements mean the cost structure of the entire organisation is transformed. And the human impact: fewer patients exposed to drugs that were destined to fail, faster access to treatments that work, and the ability to develop medicines for rare diseases where traditional trials are impossible.
+- **Time to market** — every phase compresses. Virtual trials run in parallel. Failures are caught computationally, not in clinic.
+- **Development cost** — higher hit rates mean fewer expensive late-stage failures. Smaller trials cost less to run.
+- **Trial success rate** — better candidates enter trials. Better trial designs detect real effects. The model catches failures early.
+- **Late-stage failure rate** — the most expensive failures become rare because the model catches problems before major investment.
+- **Patient burden** — far smaller cohorts needed. Fewer people exposed to drugs destined to fail.
+- **Rare disease feasibility** — virtual patients make it possible to develop medicines where traditional recruitment is impossible.
+- **Personalised dosing** — treatment strategies optimised for patient archetypes, not one-size-fits-all averages.
+
+The financial impact is staggering — preventing even a handful of late-stage failures saves enormous capital. Compressing timelines means drugs reach patients faster and generate revenue sooner. A leaner organisation means the cost structure transforms. And the human impact: fewer patients exposed to drugs that were destined to fail, faster access to treatments that work, and the ability to develop medicines for rare diseases where traditional trials are impossible.

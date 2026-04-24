@@ -4,31 +4,31 @@ import { slideUp, staggerContainer, fadeIn } from '@/shared/design-tokens';
 
 /* ------------------------------------------------------------------ */
 /*  Data: Traditional vs Computational timelines                      */
+/*  Spans are relative proportions for visual width — no exact years  */
 /* ------------------------------------------------------------------ */
 
 interface Phase {
   name: string;
-  years: string;
-  span: number; // relative width out of 100
+  span: number;
   color: string;
 }
 
 const traditionalPhases: Phase[] = [
-  { name: 'Discovery', years: '3-6 yrs', span: 30, color: 'bg-kz-purple' },
-  { name: 'Preclinical', years: '1-3 yrs', span: 15, color: 'bg-kz-blue' },
-  { name: 'Phase I', years: '1-2 yrs', span: 12, color: 'bg-kz-cyan' },
-  { name: 'Phase II', years: '2-3 yrs', span: 18, color: 'bg-kz-orange' },
-  { name: 'Phase III', years: '2-4 yrs', span: 20, color: 'bg-kz-pink' },
-  { name: 'Review', years: '1-2 yrs', span: 5, color: 'bg-kz-text-tertiary' },
+  { name: 'Discovery', span: 30, color: 'bg-kz-purple' },
+  { name: 'Preclinical', span: 15, color: 'bg-kz-blue' },
+  { name: 'Phase I', span: 12, color: 'bg-kz-cyan' },
+  { name: 'Phase II', span: 18, color: 'bg-kz-orange' },
+  { name: 'Phase III', span: 20, color: 'bg-kz-pink' },
+  { name: 'Review', span: 5, color: 'bg-kz-text-tertiary' },
 ];
 
 const computationalPhases: Phase[] = [
-  { name: 'AI Discovery', years: '1-2 yrs', span: 18, color: 'bg-kz-purple' },
-  { name: 'Virtual Preclinical', years: '6-12 mo', span: 10, color: 'bg-kz-blue' },
-  { name: 'Phase I', years: '6-12 mo', span: 10, color: 'bg-kz-cyan' },
-  { name: 'Phase II', years: '1-2 yrs', span: 15, color: 'bg-kz-orange' },
-  { name: 'Phase III', years: '1-2 yrs', span: 15, color: 'bg-kz-green' },
-  { name: 'Review', years: '6-12 mo', span: 5, color: 'bg-kz-text-tertiary' },
+  { name: 'AI Discovery', span: 18, color: 'bg-kz-purple' },
+  { name: 'Virtual Preclinical', span: 10, color: 'bg-kz-blue' },
+  { name: 'Phase I', span: 10, color: 'bg-kz-cyan' },
+  { name: 'Phase II', span: 15, color: 'bg-kz-orange' },
+  { name: 'Phase III', span: 15, color: 'bg-kz-green' },
+  { name: 'Review', span: 5, color: 'bg-kz-text-tertiary' },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -38,13 +38,13 @@ const computationalPhases: Phase[] = [
 function TimelineBar({
   phases,
   label,
-  totalYears,
+  tagline,
   inView,
   accentColor,
 }: {
   phases: Phase[];
   label: string;
-  totalYears: string;
+  tagline: string;
   inView: boolean;
   accentColor: string;
 }) {
@@ -52,7 +52,7 @@ function TimelineBar({
     <div>
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-kz-text-primary">{label}</h3>
-        <span className={`text-xs font-semibold ${accentColor}`}>{totalYears}</span>
+        <span className={`text-xs font-semibold ${accentColor}`}>{tagline}</span>
       </div>
 
       {/* Bar */}
@@ -76,15 +76,6 @@ function TimelineBar({
               </span>
             </div>
           </motion.div>
-        ))}
-      </div>
-
-      {/* Phase details below the bar */}
-      <div className="mt-2 flex gap-1">
-        {phases.map((phase) => (
-          <div key={phase.name} style={{ width: `${phase.span}%` }} className="text-center">
-            <span className="text-[10px] text-kz-text-tertiary">{phase.years}</span>
-          </div>
         ))}
       </div>
     </div>
@@ -130,13 +121,13 @@ export function TimelineComparison() {
             <TimelineBar
               phases={traditionalPhases}
               label="Traditional Drug Development"
-              totalYears="10-15 years"
+              tagline="Long, sequential phases"
               inView={inView}
               accentColor="text-kz-pink"
             />
           </motion.div>
 
-          {/* Divider with arrow */}
+          {/* Divider */}
           <motion.div variants={fadeIn} className="flex items-center justify-center gap-3">
             <div className="h-px flex-1 bg-kz-border-default" />
             <span className="text-xs font-semibold uppercase tracking-wider text-kz-cyan">
@@ -153,7 +144,7 @@ export function TimelineComparison() {
             <TimelineBar
               phases={computationalPhases}
               label="Computational Patient Approach"
-              totalYears="6-9 years"
+              tagline="Compressed, overlapping phases"
               inView={inView}
               accentColor="text-kz-green"
             />

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { FilterBar } from '@/shared/components';
 import { OUTCOME_LABELS, OUTCOME_COLORS } from '@/shared/constants/outcomes';
-import { gridPatients } from '@/data/population';
+import { getGridPatients } from '@/data/population';
 import type { PatientOutcome, PopulationPatient } from '@/shared/types';
 
 function getOutcomeAtWeek(patient: PopulationPatient, week: number): PatientOutcome {
@@ -24,18 +24,19 @@ interface OutcomeFiltersProps {
   activeFilters: PatientOutcome[];
   onToggle: (outcome: PatientOutcome) => void;
   currentWeek: number;
+  cohortSize: number;
 }
 
-export function OutcomeFilters({ activeFilters, onToggle, currentWeek }: OutcomeFiltersProps) {
+export function OutcomeFilters({ activeFilters, onToggle, currentWeek, cohortSize }: OutcomeFiltersProps) {
   const counts = useMemo(() => {
     const map: Record<string, number> = {};
     for (const o of ALL_OUTCOMES) map[o] = 0;
-    for (const p of gridPatients) {
+    for (const p of getGridPatients(cohortSize)) {
       const outcome = getOutcomeAtWeek(p, currentWeek);
       map[outcome] = (map[outcome] || 0) + 1;
     }
     return map;
-  }, [currentWeek]);
+  }, [currentWeek, cohortSize]);
 
   const items = ALL_OUTCOMES.map((o) => ({
     id: o,

@@ -4,6 +4,8 @@ import { Users, Microscope } from 'lucide-react';
 import { PageShell, TimeControls } from '@/shared/components';
 import { useSimulationTime } from '@/shared/hooks';
 import { fadeIn } from '@/shared/design-tokens';
+import { useTrialConfig } from '@/shared/context/TrialConfigContext';
+import { DISEASE_MAP, DRUG_MAP } from '@/shared/constants';
 import type { PatientOutcome } from '@/shared/types';
 import { PatientGrid } from './PatientGrid';
 import { OutcomeMetrics } from './OutcomeMetrics';
@@ -14,6 +16,10 @@ import { formatWeekLabel } from '@/lib/format';
 export default function PopulationViewPage() {
   const { state, toggle, setWeek, setSpeed } = useSimulationTime(52);
   const [activeFilters, setActiveFilters] = useState<PatientOutcome[]>([]);
+  const { config } = useTrialConfig();
+
+  const disease = DISEASE_MAP[config.diseaseId];
+  const drug = DRUG_MAP[config.drugId];
 
   const handleFilterToggle = useCallback((outcome: PatientOutcome) => {
     setActiveFilters((prev) =>
@@ -37,7 +43,7 @@ export default function PopulationViewPage() {
               Population Trial View
             </h1>
             <p className="mt-1 text-sm text-kz-text-secondary">
-              10,000 computational patients · Vyndaqel (tafamidis) · ATTR Cardiomyopathy
+              {config.cohortSize.toLocaleString()} computational patients · {drug?.brandName ?? 'Vyndaqel'} ({drug?.genericName ?? 'tafamidis'}) · {disease?.shortName ?? 'ATTR-CM'}
             </p>
           </div>
           <div className="flex items-center gap-3 rounded-xl border border-kz-border-default bg-kz-bg-secondary px-4 py-2">
@@ -71,6 +77,7 @@ export default function PopulationViewPage() {
             <PatientGrid
               currentWeek={state.currentWeek}
               activeFilters={activeFilters}
+              cohortSize={config.cohortSize}
             />
           </div>
 
@@ -81,6 +88,7 @@ export default function PopulationViewPage() {
               activeFilters={activeFilters}
               onToggle={handleFilterToggle}
               currentWeek={state.currentWeek}
+              cohortSize={config.cohortSize}
             />
             {/* Legend */}
             <div className="rounded-xl border border-kz-border-default bg-kz-bg-secondary p-4">
@@ -97,7 +105,7 @@ export default function PopulationViewPage() {
         </div>
 
         {/* Bottom: Chart */}
-        <PopulationSummaryChart currentWeek={state.currentWeek} />
+        <PopulationSummaryChart currentWeek={state.currentWeek} cohortSize={config.cohortSize} />
       </motion.div>
     </PageShell>
   );

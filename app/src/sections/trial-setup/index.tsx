@@ -1,18 +1,16 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PageShell, SectionHeading } from '@/shared/components';
 import { useScrollReveal } from '@/shared/hooks';
 import { staggerContainer, slideUp } from '@/shared/design-tokens';
-import { defaultTrialConfig } from '@/data/trial';
 import { DISEASE_MAP } from '@/shared/constants';
+import { useTrialConfig } from '@/shared/context/TrialConfigContext';
 import type { TrialConfig, DiseaseId } from '@/shared/types';
 
 import { CohortSizeSelector } from './CohortSizeSelector';
 import { RealSyntheticRatio } from './RealSyntheticRatio';
 import { DiseaseSelector } from './DiseaseSelector';
 import { DrugSelector } from './DrugSelector';
-import { PlacementOptions } from './PlacementOptions';
-import { ComorbidityPanel } from './ComorbidityPanel';
+import { CohortCharacteristics } from './CohortCharacteristics';
 import { TrialSummaryCard } from './TrialSummaryCard';
 import { LaunchButton } from './LaunchButton';
 
@@ -29,21 +27,18 @@ const DISEASE_TO_DRUG: Record<string, TrialConfig['drugId']> = {
 };
 
 export default function TrialSetupPage() {
-  const [config, setConfig] = useState<TrialConfig>(defaultTrialConfig);
+  const { config, setConfig, updateConfig } = useTrialConfig();
   const { ref, inView } = useScrollReveal();
 
   const disease = DISEASE_MAP[config.diseaseId];
 
-  const updateConfig = <K extends keyof TrialConfig>(key: K, value: TrialConfig[K]) =>
-    setConfig((prev) => ({ ...prev, [key]: value }));
-
   const handleDiseaseChange = (id: DiseaseId) => {
-    setConfig((prev) => ({
-      ...prev,
+    setConfig({
+      ...config,
       diseaseId: id,
       drugId: DISEASE_TO_DRUG[id] ?? 'vyndaqel',
-      diseasePlacement: DISEASE_MAP[id]?.canVaryPlacement ? prev.diseasePlacement : 'uniform',
-    }));
+      diseasePlacement: DISEASE_MAP[id]?.canVaryPlacement ? config.diseasePlacement : 'uniform',
+    });
   };
 
   return (
@@ -78,6 +73,14 @@ export default function TrialSetupPage() {
           </motion.div>
 
           <motion.div variants={slideUp}>
+            <CohortCharacteristics
+              disease={disease}
+              placement={config.diseasePlacement}
+              onPlacementChange={(v) => updateConfig('diseasePlacement', v)}
+            />
+          </motion.div>
+
+          <motion.div variants={slideUp}>
             <DiseaseSelector
               selected={config.diseaseId}
               onChange={handleDiseaseChange}
@@ -86,18 +89,6 @@ export default function TrialSetupPage() {
 
           <motion.div variants={slideUp}>
             <DrugSelector disease={disease} />
-          </motion.div>
-
-          <motion.div variants={slideUp}>
-            <PlacementOptions
-              disease={disease}
-              value={config.diseasePlacement}
-              onChange={(v) => updateConfig('diseasePlacement', v)}
-            />
-          </motion.div>
-
-          <motion.div variants={slideUp}>
-            <ComorbidityPanel />
           </motion.div>
         </div>
 

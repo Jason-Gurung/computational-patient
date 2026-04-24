@@ -2,11 +2,11 @@ import type { PatientProfile } from '@/shared/types';
 
 export const patient001: PatientProfile = {
   id: 'patient-001',
-  name: 'Eleanor Voss',
+  name: 'Edward Voss',
   age: 72,
-  sex: 'female',
-  weightKg: 68,
-  heightCm: 165,
+  sex: 'male',
+  weightKg: 82,
+  heightCm: 178,
   bmi: 25.0,
   ancestry: 'European',
   isGenerated: false,

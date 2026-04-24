@@ -28,10 +28,10 @@ export const landingContent = {
     },
   ],
 
-  impactNumbers: [
-    { label: 'Drug Development Timeline', current: '10-15 years', improvement: 'Dramatically shorter' },
-    { label: 'Average Trial Cost', current: '$2.6B', improvement: 'Substantially reduced' },
-    { label: 'Phase II Success Rate', current: '28%', improvement: 'Significantly higher' },
-    { label: 'Required Trial Participants', current: '3,000+', improvement: 'A fraction of today' },
+  impacts: [
+    { label: 'Time to Market', description: 'Every phase compresses. Virtual trials run in parallel. Failures are caught computationally, not in clinic.', icon: 'clock' },
+    { label: 'Development Cost', description: 'Higher hit rates mean fewer expensive late-stage failures. Smaller trials cost less to run.', icon: 'dollar-sign' },
+    { label: 'Trial Success Rate', description: 'Better candidates enter trials. Better trial designs detect real effects. The model catches failures early.', icon: 'trending-up' },
+    { label: 'Patient Burden', description: 'Fewer people exposed to drugs destined to fail. Smaller cohorts needed. Rare diseases become feasible.', icon: 'users' },
   ],
 } as const;

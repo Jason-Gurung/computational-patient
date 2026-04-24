@@ -17,7 +17,7 @@ export const heartMicro: ZoomLevelMeta = {
     {
       id: 'micro-untreated',
       title: 'The Molecular Culprit — Misfolding TTR',
-      body: 'Transthyretin normally exists as a stable tetramer — four identical subunits arranged around a central channel that transports thyroxine (thyroid hormone) and retinol (vitamin A). The Val122Ile mutation destabilises the tetramer. It dissociates into monomers that partially unfold, exposing sticky hydrophobic patches. These misfolded monomers aggregate into protofilaments, then mature amyloid fibrils — the insoluble deposits destroying Eleanor\'s heart.',
+      body: 'Transthyretin normally exists as a stable tetramer — four identical subunits arranged around a central channel that transports thyroxine (thyroid hormone) and retinol (vitamin A). The Val122Ile mutation destabilises the tetramer. It dissociates into monomers that partially unfold, exposing sticky hydrophobic patches. These misfolded monomers aggregate into protofilaments, then mature amyloid fibrils — the insoluble deposits destroying Edward\'s heart.',
       phase: 'untreated',
       zoomLevel: ZoomLevel.Micro,
       timeRange: [0, 12],

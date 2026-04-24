@@ -1,23 +1,33 @@
 import { useRef, useEffect, useCallback, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { gridPatients, CLICKABLE_PATIENT_IDS } from '@/data/population';
+import { getGridPatients, getGridCols } from '@/data/population';
 import { OUTCOME_COLORS } from '@/shared/constants/outcomes';
 import { ROUTES } from '@/shared/constants/routes';
 import type { PatientOutcome, PopulationPatient } from '@/shared/types';
 import { PatientTooltip } from './PatientTooltip';
 
-const COLS = 100;
-const ROWS = 100;
-const DOT_SIZE = 6;
-const GAP = 1;
-const CELL = DOT_SIZE + GAP;
-const CANVAS_W = COLS * CELL;
-const CANVAS_H = ROWS * CELL;
+// Target a minimum canvas width so small cohorts don't produce a tiny
+// pixelated image that gets upscaled by CSS.
+const MIN_CANVAS_WIDTH = 800;
 
-// Clickable patient lookup for fast hit-testing
-const clickableMap = new Map<string, PopulationPatient>();
-for (const p of gridPatients) {
-  if (p.isClickable) clickableMap.set(p.id, p);
+function getDotSize(cohortSize: number, cols: number) {
+  // Base sizes per cohort range
+  let dot: number, gap: number;
+  if (cohortSize <= 500) { dot = 12; gap = 3; }
+  else if (cohortSize <= 2000) { dot = 8; gap = 2; }
+  else if (cohortSize <= 10000) { dot = 6; gap = 1; }
+  else if (cohortSize <= 50000) { dot = 3; gap = 1; }
+  else { dot = 2; gap = 0; }
+
+  // Scale up if the resulting canvas would be smaller than the minimum
+  const baseWidth = cols * (dot + gap);
+  if (baseWidth < MIN_CANVAS_WIDTH) {
+    const scale = MIN_CANVAS_WIDTH / baseWidth;
+    dot = Math.round(dot * scale);
+    gap = Math.max(1, Math.round(gap * scale));
+  }
+
+  return { dot, gap };
 }
 
 function getOutcomeAtWeek(patient: PopulationPatient, week: number): PatientOutcome {
@@ -36,9 +46,10 @@ function getOutcomeAtWeek(patient: PopulationPatient, week: number): PatientOutc
 interface PatientGridProps {
   currentWeek: number;
   activeFilters: PatientOutcome[];
+  cohortSize: number;
 }
 
-export function PatientGrid({ currentWeek, activeFilters }: PatientGridProps) {
+export function PatientGrid({ currentWeek, activeFilters, cohortSize }: PatientGridProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -48,7 +59,14 @@ export function PatientGrid({ currentWeek, activeFilters }: PatientGridProps) {
 
   const hasFilters = activeFilters.length > 0;
 
-  // Pre-compute colour hex to avoid lookups per pixel
+  const gridParams = useMemo(() => {
+    const cols = getGridCols(cohortSize);
+    const rows = Math.ceil(cohortSize / cols);
+    const { dot, gap } = getDotSize(cohortSize, cols);
+    const cell = dot + gap;
+    return { cols, rows, dot, gap, cell, canvasW: cols * cell, canvasH: rows * cell };
+  }, [cohortSize]);
+
   const outcomeColorHex = useMemo(() => {
     const map: Record<string, string> = {};
     for (const [key, val] of Object.entries(OUTCOME_COLORS)) {
@@ -57,20 +75,24 @@ export function PatientGrid({ currentWeek, activeFilters }: PatientGridProps) {
     return map;
   }, []);
 
-  // Draw the grid
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+    const { cols, dot, cell, canvasW, canvasH } = gridParams;
 
-    for (let i = 0; i < gridPatients.length; i++) {
-      const p = gridPatients[i];
+    ctx.clearRect(0, 0, canvasW, canvasH);
+
+    const patients = getGridPatients(cohortSize);
+    for (let i = 0; i < patients.length; i++) {
+      const p = patients[i];
       const outcome = getOutcomeAtWeek(p, currentWeek);
-      const x = p.gridPosition.col * CELL;
-      const y = p.gridPosition.row * CELL;
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const x = col * cell;
+      const y = row * cell;
 
       const dimmed = hasFilters && !activeFilters.includes(outcome);
 
@@ -78,35 +100,32 @@ export function PatientGrid({ currentWeek, activeFilters }: PatientGridProps) {
       ctx.fillStyle = outcomeColorHex[outcome];
 
       if (p.isClickable) {
-        // Draw a slightly larger circle with glow for clickable patients
         ctx.save();
         if (!dimmed) {
           ctx.shadowColor = outcomeColorHex[outcome];
           ctx.shadowBlur = 10;
         }
         ctx.beginPath();
-        ctx.arc(x + DOT_SIZE / 2, y + DOT_SIZE / 2, DOT_SIZE / 2 + 1, 0, Math.PI * 2);
+        ctx.arc(x + dot / 2, y + dot / 2, dot / 2 + 1, 0, Math.PI * 2);
         ctx.fill();
 
-        // Ring
         ctx.shadowBlur = 0;
         ctx.globalAlpha = dimmed ? 0.1 : 0.7;
         ctx.strokeStyle = '#ECEFF1';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.arc(x + DOT_SIZE / 2, y + DOT_SIZE / 2, DOT_SIZE / 2 + 2.5, 0, Math.PI * 2);
+        ctx.arc(x + dot / 2, y + dot / 2, dot / 2 + 2.5, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
       } else {
-        // Regular patient: small rounded rect
         ctx.beginPath();
-        ctx.roundRect(x, y, DOT_SIZE, DOT_SIZE, 1);
+        ctx.roundRect(x, y, dot, dot, 1);
         ctx.fill();
       }
     }
 
     ctx.globalAlpha = 1;
-  }, [currentWeek, activeFilters, hasFilters, outcomeColorHex]);
+  }, [currentWeek, activeFilters, hasFilters, outcomeColorHex, cohortSize, gridParams]);
 
   useEffect(() => {
     cancelAnimationFrame(animFrameRef.current);
@@ -114,25 +133,27 @@ export function PatientGrid({ currentWeek, activeFilters }: PatientGridProps) {
     return () => cancelAnimationFrame(animFrameRef.current);
   }, [draw]);
 
-  // Hit-test for clickable patients
   const getPatientAtPos = useCallback((clientX: number, clientY: number): PopulationPatient | null => {
     const canvas = canvasRef.current;
     if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
-    const scaleX = CANVAS_W / rect.width;
-    const scaleY = CANVAS_H / rect.height;
+    const { cols, rows, cell, canvasW, canvasH } = gridParams;
+    const scaleX = canvasW / rect.width;
+    const scaleY = canvasH / rect.height;
     const cx = (clientX - rect.left) * scaleX;
     const cy = (clientY - rect.top) * scaleY;
 
-    const col = Math.floor(cx / CELL);
-    const row = Math.floor(cy / CELL);
-    if (col < 0 || col >= COLS || row < 0 || row >= ROWS) return null;
+    const col = Math.floor(cx / cell);
+    const row = Math.floor(cy / cell);
+    if (col < 0 || col >= cols || row < 0 || row >= rows) return null;
 
-    const idx = row * COLS + col;
-    const patient = gridPatients[idx];
+    const idx = row * cols + col;
+    const patients = getGridPatients(cohortSize);
+    if (idx >= patients.length) return null;
+    const patient = patients[idx];
     if (patient?.isClickable) return patient;
     return null;
-  }, []);
+  }, [cohortSize, gridParams]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const patient = getPatientAtPos(e.clientX, e.clientY);
@@ -157,8 +178,8 @@ export function PatientGrid({ currentWeek, activeFilters }: PatientGridProps) {
     <div ref={containerRef} className="relative">
       <canvas
         ref={canvasRef}
-        width={CANVAS_W}
-        height={CANVAS_H}
+        width={gridParams.canvasW}
+        height={gridParams.canvasH}
         className="h-auto w-full cursor-crosshair rounded-xl border border-kz-border-default bg-kz-bg-secondary"
         style={{ imageRendering: 'pixelated' }}
         onMouseMove={handleMouseMove}
@@ -170,10 +191,10 @@ export function PatientGrid({ currentWeek, activeFilters }: PatientGridProps) {
       )}
       <div className="mt-2 flex items-center justify-between">
         <span className="text-xs text-kz-text-tertiary">
-          10,000 virtual patients — {CLICKABLE_PATIENT_IDS.length} explorable
+          {cohortSize.toLocaleString()} virtual patients — 3 explorable
         </span>
         <span className="text-xs text-kz-text-tertiary">
-          100 × 100 grid
+          {gridParams.cols} &times; {gridParams.rows} grid
         </span>
       </div>
     </div>

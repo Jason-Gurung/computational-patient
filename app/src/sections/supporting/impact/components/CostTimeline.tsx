@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Clock, DollarSign } from 'lucide-react';
+import { Clock, DollarSign, TrendingUp } from 'lucide-react';
 import { useScrollReveal } from '@/shared/hooks';
 import { staggerContainer, slideUp, fadeIn } from '@/shared/design-tokens';
 
+/* Relative proportions drive the bar widths — the visual compression
+   is directionally correct without committing to exact year projections */
 const phases = [
   { name: 'Discovery', traditional: 4, computational: 2 },
   { name: 'Preclinical', traditional: 2, computational: 1 },
@@ -13,26 +14,8 @@ const phases = [
   { name: 'Review', traditional: 1.5, computational: 1 },
 ];
 
-const traditionalTotal = phases.reduce((s, p) => s + p.traditional, 0); // 14.5
-const computationalTotal = phases.reduce((s, p) => s + p.computational, 0); // 8.3
-
-function AnimatedNumber({ value, inView, suffix = '', prefix = '' }: { value: number; inView: boolean; suffix?: string; prefix?: string }) {
-  const [display, setDisplay] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    const start = performance.now();
-    const duration = 1500;
-    function tick(now: number) {
-      const progress = Math.min((now - start) / duration, 1);
-      setDisplay(Math.round(progress * value * 10) / 10);
-      if (progress < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }, [inView, value]);
-
-  return <span>{prefix}{display.toFixed(1)}{suffix}</span>;
-}
+const traditionalTotal = phases.reduce((s, p) => s + p.traditional, 0);
+const computationalTotal = phases.reduce((s, p) => s + p.computational, 0);
 
 export function CostTimeline() {
   const { ref, inView } = useScrollReveal();
@@ -50,24 +33,18 @@ export function CostTimeline() {
       <motion.div variants={slideUp} className="mb-10 grid gap-4 md:grid-cols-3">
         <div className="rounded-xl border border-kz-border-default bg-kz-bg-secondary p-5 text-center">
           <Clock size={24} className="mx-auto mb-2 text-kz-text-tertiary" />
-          <p className="text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">Time Saved</p>
-          <p className="mt-1 text-2xl font-bold text-kz-green">
-            <AnimatedNumber value={traditionalTotal - computationalTotal} inView={inView} suffix=" years" />
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">Timeline</p>
+          <p className="mt-1 text-lg font-bold text-kz-green">Dramatically shorter</p>
         </div>
         <div className="rounded-xl border border-kz-border-default bg-kz-bg-secondary p-5 text-center">
           <DollarSign size={24} className="mx-auto mb-2 text-kz-text-tertiary" />
-          <p className="text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">Cost Reduction</p>
-          <p className="mt-1 text-2xl font-bold text-kz-green">
-            <AnimatedNumber value={46} inView={inView} suffix="%" />
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">Cost Per Drug</p>
+          <p className="mt-1 text-lg font-bold text-kz-green">Substantially reduced</p>
         </div>
         <div className="rounded-xl border border-kz-border-default bg-kz-bg-secondary p-5 text-center">
-          <Clock size={24} className="mx-auto mb-2 text-kz-text-tertiary" />
-          <p className="text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">Drugs to Market / Decade</p>
-          <p className="mt-1 text-2xl font-bold text-kz-cyan">
-            2x
-          </p>
+          <TrendingUp size={24} className="mx-auto mb-2 text-kz-text-tertiary" />
+          <p className="text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">Pipeline Throughput</p>
+          <p className="mt-1 text-lg font-bold text-kz-cyan">Significantly greater</p>
         </div>
       </motion.div>
 
@@ -76,7 +53,7 @@ export function CostTimeline() {
         {/* Traditional timeline */}
         <div>
           <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">
-            Traditional — {traditionalTotal} years
+            Traditional — 10-15 years
           </p>
           <div className="flex h-12 overflow-hidden rounded-xl border border-kz-border-subtle">
             {phases.map((phase, i) => {
@@ -101,7 +78,7 @@ export function CostTimeline() {
         {/* Computational timeline */}
         <div>
           <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-kz-cyan">
-            Computational — {computationalTotal} years
+            Computational — dramatically shorter
           </p>
           <div className="flex overflow-hidden rounded-xl border border-kz-cyan/30" style={{ width: `${(computationalTotal / maxYears) * 100}%` }}>
             <div className="flex h-12 w-full">
@@ -130,7 +107,7 @@ export function CostTimeline() {
           >
             <div className="flex items-center gap-1 rounded-full border border-kz-green/30 bg-kz-green/10 px-3 py-1">
               <span className="text-xs font-semibold text-kz-green">
-                {(traditionalTotal - computationalTotal).toFixed(1)} years saved
+                Every phase compressed
               </span>
             </div>
           </div>

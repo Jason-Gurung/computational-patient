@@ -29,6 +29,10 @@ const PARTICLE_COLORS = [
   'rgba(100,255,218,',  // teal
 ];
 
+const PARTICLE_COUNT = 35;
+const CONNECTION_DIST = 150;
+const CONNECTION_DIST_SQ = CONNECTION_DIST * CONNECTION_DIST;
+
 function initParticles(w: number, h: number, count: number): Particle[] {
   return Array.from({ length: count }, () => ({
     x: Math.random() * w,
@@ -57,7 +61,7 @@ function HeroCanvas() {
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      particlesRef.current = initParticles(canvas.width, canvas.height, 80);
+      particlesRef.current = initParticles(canvas.width, canvas.height, PARTICLE_COUNT);
     };
     resize();
     window.addEventListener('resize', resize);
@@ -67,16 +71,16 @@ function HeroCanvas() {
       ctx.clearRect(0, 0, w, h);
 
       const particles = particlesRef.current;
-      // Draw connection lines between nearby particles
+      // Draw connection lines between nearby particles (squared distance to avoid sqrt)
+      ctx.lineWidth = 0.5;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
-            const alpha = (1 - dist / 120) * 0.08;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < CONNECTION_DIST_SQ) {
+            const alpha = (1 - Math.sqrt(distSq) / CONNECTION_DIST) * 0.08;
             ctx.strokeStyle = `rgba(79,195,247,${alpha})`;
-            ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);

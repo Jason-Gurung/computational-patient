@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from 'recharts';
-import { gridPatients } from '@/data/population';
+import { getGridPatients } from '@/data/population';
 import { OUTCOME_COLORS, OUTCOME_LABELS } from '@/shared/constants/outcomes';
 import type { PatientOutcome, PopulationPatient } from '@/shared/types';
 import { colors } from '@/shared/design-tokens';
@@ -32,16 +32,16 @@ function getOutcomeAtWeek(patient: PopulationPatient, week: number): PatientOutc
   return current;
 }
 
-function buildChartData() {
+function buildChartData(cohortSize: number) {
   return WEEK_SNAPSHOTS.map((week) => {
     const counts: Record<string, number> = {};
     for (const o of ALL_OUTCOMES) counts[o] = 0;
-    for (const p of gridPatients) {
+    const patients = getGridPatients(cohortSize);
+    for (const p of patients) {
       const outcome = getOutcomeAtWeek(p, week);
       counts[outcome] = (counts[outcome] || 0) + 1;
     }
-    // Convert to percentages
-    const total = gridPatients.length;
+    const total = patients.length;
     const row: Record<string, number | string> = { week: `W${week}` };
     for (const o of ALL_OUTCOMES) {
       row[o] = Number(((counts[o] / total) * 100).toFixed(1));
@@ -52,10 +52,11 @@ function buildChartData() {
 
 interface PopulationSummaryChartProps {
   currentWeek: number;
+  cohortSize: number;
 }
 
-export function PopulationSummaryChart({ currentWeek }: PopulationSummaryChartProps) {
-  const data = useMemo(buildChartData, []);
+export function PopulationSummaryChart({ currentWeek, cohortSize }: PopulationSummaryChartProps) {
+  const data = useMemo(() => buildChartData(cohortSize), [cohortSize]);
 
   const currentWeekLabel = `W${currentWeek}`;
 

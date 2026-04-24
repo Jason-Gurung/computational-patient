@@ -1,64 +1,22 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Clock, DollarSign, TrendingUp, Users } from 'lucide-react';
 import { useScrollReveal } from '@/shared/hooks';
 import { slideUp, staggerContainer, fadeIn } from '@/shared/design-tokens';
 import { landingContent } from '@/data/content';
 
-/* ------------------------------------------------------------------ */
-/*  Animated number — counts up on scroll reveal                      */
-/* ------------------------------------------------------------------ */
+const ICON_MAP: Record<string, React.ElementType> = {
+  clock: Clock,
+  'dollar-sign': DollarSign,
+  'trending-up': TrendingUp,
+  users: Users,
+};
 
-function AnimatedText({
-  text,
-  inView,
-  delay = 0,
-}: {
-  text: string;
-  inView: boolean;
-  delay?: number;
-}) {
-  const [display, setDisplay] = useState(text);
-  const [started, setStarted] = useState(false);
-
-  const numMatch = text.match(/([\d,.]+)/);
-  const hasNumber = numMatch !== null;
-  const numericVal = hasNumber ? parseFloat(numMatch[1].replace(/,/g, '')) : 0;
-  const prefix = hasNumber ? text.slice(0, text.indexOf(numMatch[1])) : '';
-  const suffix = hasNumber
-    ? text.slice(text.indexOf(numMatch[1]) + numMatch[1].length)
-    : '';
-  const hasDecimal = numMatch ? numMatch[1].includes('.') : false;
-
-  useEffect(() => {
-    if (!inView || started || !hasNumber) return;
-    setStarted(true);
-    const duration = 2000;
-    const startTime = performance.now() + delay;
-
-    function tick(now: number) {
-      const elapsed = now - startTime;
-      if (elapsed < 0) {
-        requestAnimationFrame(tick);
-        return;
-      }
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const current = eased * numericVal;
-      const formatted = hasDecimal
-        ? current.toFixed(1)
-        : Math.round(current).toLocaleString();
-      setDisplay(`${prefix}${formatted}${suffix}`);
-      if (progress < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }, [inView, started, hasNumber, numericVal, prefix, suffix, hasDecimal, delay]);
-
-  return <span>{display}</span>;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Impact Numbers section                                            */
-/* ------------------------------------------------------------------ */
+const ICON_COLORS = [
+  'text-kz-cyan',
+  'text-kz-green',
+  'text-kz-orange',
+  'text-kz-teal',
+];
 
 export function ImpactNumbers() {
   const { ref, inView } = useScrollReveal();
@@ -87,32 +45,28 @@ export function ImpactNumbers() {
           animate={inView ? 'visible' : 'hidden'}
           className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {landingContent.impactNumbers.map((item, i) => (
-            <motion.div
-              key={item.label}
-              variants={slideUp}
-              className="rounded-xl border border-kz-border-default bg-kz-bg-secondary p-6 text-center"
-            >
-              <p className="mb-5 text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">
-                {item.label}
-              </p>
-
-              {/* Current state */}
-              <div className="mb-3">
-                <span className="text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">
-                  Today
-                </span>
-                <p className="mt-1 text-2xl font-bold text-kz-text-primary">
-                  <AnimatedText text={item.current} inView={inView} delay={i * 120} />
+          {landingContent.impacts.map((item, i) => {
+            const Icon = ICON_MAP[item.icon] ?? Clock;
+            return (
+              <motion.div
+                key={item.label}
+                variants={slideUp}
+                className="rounded-xl border border-kz-border-default bg-kz-bg-secondary p-6"
+              >
+                <div
+                  className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-kz-bg-tertiary ${ICON_COLORS[i]}`}
+                >
+                  <Icon size={24} />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold text-kz-text-primary">
+                  {item.label}
+                </h3>
+                <p className="text-sm leading-relaxed text-kz-text-secondary">
+                  {item.description}
                 </p>
-              </div>
-
-              {/* Improvement */}
-              <p className="inline-block rounded-lg bg-kz-green/10 px-3 py-1 text-sm font-semibold text-kz-green">
-                {item.improvement}
-              </p>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>

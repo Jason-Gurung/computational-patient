@@ -44,6 +44,51 @@ Agent D (Body Explorer): check this table before defaulting to placeholders. If 
 
 ## Log Entries
 
+### [Cross-agent] Trial Config Flows to Population View — 2026-04-24 23:30
+Status: completed
+What I built: Connected trial setup config to the population view so user choices carry through.
+- **TrialConfigContext** (`shared/context/TrialConfigContext.tsx`) — React context + provider + `useTrialConfig()` hook holding the `TrialConfig` state. Provider wraps the app in `App.tsx`.
+- **Trial Setup** — now reads/writes config via context instead of local `useState`. All user selections (cohort size, disease, drug, ratio, placement) persist across navigation.
+- **grid-patients.ts** — `getGridPatients(cohortSize)` now accepts dynamic cohort size. Grid dimensions computed from `Math.ceil(Math.sqrt(cohortSize))`. 3 clickable patients placed at proportional positions (~19%, ~42%, ~76%). Cache keyed by cohortSize. Exported `getGridCols()` helper.
+- **PatientGrid** — dynamic dot sizing based on cohort (12px at ≤500 down to 2px at 100K+), dynamic canvas dimensions, accepts `cohortSize` prop. Bottom label shows dynamic patient count and grid dimensions.
+- **OutcomeFilters** — accepts `cohortSize` prop, passes to `getGridPatients()`.
+- **PopulationSummaryChart** — accepts `cohortSize` prop, passes to `getGridPatients()`.
+- **Population View page** — reads config from context, shows dynamic subtitle: "{N} computational patients · {Drug} · {Disease}". Passes `cohortSize` to all children.
+What I exported/shared: `TrialConfigProvider` and `useTrialConfig()` from `@/shared/context/TrialConfigContext`. `getGridCols()` from `@/data/population`.
+Notes for other agents: `CLICKABLE_PATIENT_IDS` export renamed to `CLICKABLE_LINKED_IDS` since the population patient IDs are now dynamic. The 3 linked patient IDs (`patient-001`, `-002`, `-003`) remain stable.
+
+### [Agent B] Trial Setup — Slider fixes + Cohort Characteristics rework — 2026-04-24 17:00
+Status: completed
+What I changed:
+- **Slider fix:** Replaced broken shadcn/base-ui Slider with custom `KzSlider` component — renders track/fill/thumb as plain divs with an invisible native `<input type="range">` overlaid for drag interaction. Fixes all alignment and fill-percentage bugs. Removed `.kz-slider` CSS from `index.css`.
+- **New `CohortCharacteristics` panel** — replaces the old separate `ComorbidityPanel` and `PlacementOptions`. Contains:
+  - **Age Range** — min/max sliders (18–90)
+  - **Sex Distribution** — slider with purple/blue F/M split bar
+  - **Disease Placement** — uniform/varied toggle (conditional on disease.canVaryPlacement)
+  - **Pre-existing Conditions** — three-state cycle per condition: Off → Include (some patients have it, green) → Required (all patients must have it, cyan) → Off
+- **Page reorder:** Cohort Characteristics moved up to sit right after Cohort Size + Real/Synthetic Ratio, before Disease/Drug selection. Flow is now: how many → what kind of patients → what disease/drug.
+What I exported/shared: `KzSlider` is in `src/sections/trial-setup/KzSlider.tsx` — reusable within this section. Old `ComorbidityPanel.tsx` and `PlacementOptions.tsx` are no longer imported (files still exist but unused).
+Dependencies: None.
+Notes for other agents: The shadcn `slider` component (`src/components/ui/slider.tsx`) was installed but is no longer used by trial-setup. Other agents can use it if they fix the base-ui `onValueChange` callback signature, or use `KzSlider` pattern instead.
+
+### [Agent A] Remove ALL specific numbers from metrics — 2026-04-24 16:30
+Status: completed
+What I changed: **Removed ALL specific numbers from improvement metrics AND current-state industry stats.** The vision pitch should not cite any figures — not projected improvements, not current-state stats. Just describe what aspects improve and that the improvement is significant. This was a two-pass change (first pass kept current-state numbers, second pass removed those too).
+Files updated:
+- `src/data/content/landing.ts` — `impactNumbers` renamed to `impacts`, now just label + description + icon (no numbers at all)
+- `src/sections/landing/components/ImpactNumbers.tsx` — redesigned as 4 icon+text cards (like ConceptCards) describing what improves
+- `src/sections/landing/components/TimelineComparison.tsx` — all year labels removed from both timelines, bars show phase names only, taglines are qualitative ("Long, sequential phases" vs "Compressed, overlapping phases")
+- `src/data/content/impact.ts` — comparisons: removed `value` fields entirely, only `detail` text remains
+- `src/sections/supporting/impact/components/MetricComparison.tsx` — no longer renders `.value`, just shows traditional vs computational descriptions
+- `src/sections/supporting/impact/components/EfficiencySection.tsx` — replaced number cards with label+description cards
+- `src/sections/supporting/impact/components/CostTimeline.tsx` — summary cards show qualitative labels, timeline labels qualitative, no AnimatedNumber component
+- `docs/OVERVIEW.md` — replaced impact table with bullet-point descriptions
+- `docs/TRIAL-TRANSFORMATION.md` — removed all specific numbers from pipeline diagrams, per-phase stats, and summary table
+- `README.md` — removed all specific numbers from intro and closing
+- `agent-prompts/agent-a-landing.md` + `agent-e-supporting.md` — updated specs
+**POLICY FOR ALL AGENTS: Do NOT use specific numbers (years, dollars, percentages, headcounts) when describing improvements or current-state metrics. Describe aspects qualitatively. The only exceptions are narrative illustrations within the vision docs (e.g. "simulate 100,000 patients") describing what the system can do, not how much it saves.**
+Notes for other agents: Visual bar proportions in timelines still show relative compression — the visual contrast is preserved without pinning numbers. If you need to convey scale, use words like "dramatically", "substantially", "significantly" — not figures.
+
 ### [Agent F] v2 Models — Sketchfab bases + Kurzgesagt restyle — 2026-04-24 13:48
 Status: completed
 What I built: Rebuilt all 6 models using open-source Sketchfab models as bases (where available), restyled to unified Kurzgesagt palette. Major quality improvement over v1 primitive-only approach:

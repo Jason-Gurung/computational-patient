@@ -50,7 +50,7 @@ export const heartOrgan: ZoomLevelMeta = {
     {
       id: 'organ-post',
       title: 'Post-Treatment — Stabilised Heart',
-      body: 'At 12 months, the computational model shows cardiac function has stabilised. Wall thickness has plateaued at 14mm rather than continuing to increase. Ejection fraction has held at 48%. The model also flags that Eleanor\'s renal function should be monitored — her baseline eGFR of 64 means drug clearance may be slightly slower, maintaining higher plasma levels.',
+      body: 'At 12 months, the computational model shows cardiac function has stabilised. Wall thickness has plateaued at 14mm rather than continuing to increase. Ejection fraction has held at 48%. The model also flags that Edward\'s renal function should be monitored — his baseline eGFR of 64 means drug clearance may be slightly slower, maintaining higher plasma levels.',
       phase: 'post-treatment',
       zoomLevel: ZoomLevel.Organ,
       timeRange: [36, 52],

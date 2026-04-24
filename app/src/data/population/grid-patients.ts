@@ -25,27 +25,35 @@ function generateOutcomeHistory(
   finalOutcome: PatientOutcome,
   rand: () => number
 ): OutcomeAtTime[] {
+  // Each patient gets a random "onset week" when they begin showing their outcome.
+  // This staggers transitions so the grid has visual variety at every timepoint.
+  const onsetWeek = Math.floor(rand() * 40); // 0–39, so some show from week 0
+
   const history: OutcomeAtTime[] = [
-    { weekNumber: 0, outcome: 'stable' },
+    { weekNumber: 0, outcome: onsetWeek === 0 ? finalOutcome : 'stable' },
   ];
 
-  const transitions: number[] = [4, 12, 24, 36, 52];
-  for (const week of transitions) {
-    if (week < 52) {
-      const midOutcome = rand() > 0.4 ? 'stable' : finalOutcome;
-      history.push({ weekNumber: week, outcome: midOutcome });
-    } else {
+  const checkpoints = [2, 6, 12, 20, 30, 42, 52];
+  for (const week of checkpoints) {
+    if (week >= onsetWeek) {
       history.push({ weekNumber: week, outcome: finalOutcome });
+    } else {
+      // Before onset: small chance of an intermediate signal
+      const earlySignal = rand() < 0.15;
+      history.push({
+        weekNumber: week,
+        outcome: earlySignal ? finalOutcome : 'stable',
+      });
     }
   }
 
   return history;
 }
 
-function generateGridPatients(): PopulationPatient[] {
+function generateGridPatients(cohortSize: number): PopulationPatient[] {
   const rand = seededRandom(42);
   const patients: PopulationPatient[] = [];
-  const GRID_COLS = 100;
+  const GRID_COLS = Math.ceil(Math.sqrt(cohortSize));
 
   const outcomeDistribution: [PatientOutcome, number][] = [
     ['responding', 0.35],
@@ -56,7 +64,7 @@ function generateGridPatients(): PopulationPatient[] {
     ['withdrawn', 0.03],
   ];
 
-  for (let i = 0; i < 10000; i++) {
+  for (let i = 0; i < cohortSize; i++) {
     const outcome = weightedRandom(outcomeDistribution, rand);
     patients.push({
       id: `pop-${String(i).padStart(5, '0')}`,
@@ -67,22 +75,37 @@ function generateGridPatients(): PopulationPatient[] {
     });
   }
 
-  // 3 clickable patients linked to real profiles
-  patients[4247].isClickable = true;
-  patients[4247].linkedPatientId = 'patient-001';
-  patients[4247].outcome = 'responding';
+  // 3 clickable patients at proportional positions through the grid
+  const clickableIndices = [
+    Math.floor(cohortSize * 0.42),
+    Math.floor(cohortSize * 0.19),
+    Math.floor(cohortSize * 0.76),
+  ];
+  const linkedIds = ['patient-001', 'patient-002', 'patient-003'];
+  const clickableOutcomes: PatientOutcome[] = ['responding', 'adverse-event', 'non-responding'];
 
-  patients[1893].isClickable = true;
-  patients[1893].linkedPatientId = 'patient-002';
-  patients[1893].outcome = 'adverse-event';
-
-  patients[7621].isClickable = true;
-  patients[7621].linkedPatientId = 'patient-003';
-  patients[7621].outcome = 'non-responding';
+  clickableIndices.forEach((idx, i) => {
+    if (idx < cohortSize) {
+      patients[idx].isClickable = true;
+      patients[idx].linkedPatientId = linkedIds[i];
+      patients[idx].outcome = clickableOutcomes[i];
+    }
+  });
 
   return patients;
 }
 
-export const gridPatients = generateGridPatients();
+const _cache = new Map<number, PopulationPatient[]>();
 
-export const CLICKABLE_PATIENT_IDS = ['pop-04247', 'pop-01893', 'pop-07621'];
+export function getGridPatients(cohortSize: number = 10000): PopulationPatient[] {
+  if (_cache.has(cohortSize)) return _cache.get(cohortSize)!;
+  const patients = generateGridPatients(cohortSize);
+  _cache.set(cohortSize, patients);
+  return patients;
+}
+
+export function getGridCols(cohortSize: number): number {
+  return Math.ceil(Math.sqrt(cohortSize));
+}
+
+export const CLICKABLE_LINKED_IDS = ['patient-001', 'patient-002', 'patient-003'];

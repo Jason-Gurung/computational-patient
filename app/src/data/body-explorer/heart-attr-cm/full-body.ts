@@ -24,8 +24,8 @@ export const heartFullBody: ZoomLevelMeta = {
   narration: [
     {
       id: 'full-body-untreated',
-      title: 'The Computational Patient — Eleanor Voss',
-      body: 'Eleanor is a 72-year-old woman with hereditary transthyretin amyloid cardiomyopathy (ATTR-CM). Her TTR Val122Ile mutation causes the transthyretin protein to misfold and deposit as amyloid in her heart tissue. The computational model captures her complete biology — genetics, organ function, comorbidities, medications — to predict how her disease will progress and how she will respond to treatment.',
+      title: 'The Computational Patient — Edward Voss',
+      body: 'Edward is a 72-year-old man with hereditary transthyretin amyloid cardiomyopathy (ATTR-CM). His TTR Val122Ile mutation causes the transthyretin protein to misfold and deposit as amyloid in his heart tissue. The computational model captures his complete biology — genetics, organ function, comorbidities, medications — to predict how her disease will progress and how she will respond to treatment.',
       phase: 'untreated',
       zoomLevel: ZoomLevel.FullBody,
       timeRange: [0, 12],
@@ -45,7 +45,7 @@ export const heartFullBody: ZoomLevelMeta = {
     {
       id: 'full-body-post',
       title: 'Treatment Response — 6 Months',
-      body: 'After six months of treatment, cardiac function has stabilised. NT-proBNP rise has been attenuated. The model predicts reduced hospitalisation risk and improved functional capacity. Importantly, it also flags a potential drug-drug interaction with her existing diuretic regimen that warrants monitoring.',
+      body: 'After six months of treatment, cardiac function has stabilised. NT-proBNP rise has been attenuated. The model predicts reduced hospitalisation risk and improved functional capacity. Importantly, it also flags a potential drug-drug interaction with his existing diuretic regimen that warrants monitoring.',
       phase: 'post-treatment',
       zoomLevel: ZoomLevel.FullBody,
       timeRange: [36, 52],

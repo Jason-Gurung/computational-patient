@@ -78,7 +78,7 @@ Components to build inside `impact/components/`:
 2. **CostTimeline** — Animated savings visualization
    - Show the timeline compression visually
    - Could be two parallel timelines or an animated transformation
-   - 10-15 years → 6-9 years with cost savings
+   - 10-15 years → "Dramatically shorter" (do NOT use specific projected numbers — only qualitative improvements)
 
 3. **MoatDiagram** — The competitive advantage visualization
    - 5 bullet points from `impactContent.moat.points`

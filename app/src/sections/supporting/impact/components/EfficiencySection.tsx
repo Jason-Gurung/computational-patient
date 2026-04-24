@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion';
-import { Users, ArrowRight, Zap } from 'lucide-react';
+import { Users, Zap } from 'lucide-react';
 import { useScrollReveal } from '@/shared/hooks';
 import { staggerContainer, slideUp, fadeIn } from '@/shared/design-tokens';
 import { impactContent } from '@/data/content';
 
 const metrics = [
-  { label: 'Pipeline Throughput', before: '15 drugs/year', after: '15 drugs/year', note: 'Same output' },
-  { label: 'R&D Headcount', before: '25,000', after: '12,000', note: '-52%' },
-  { label: 'Cost Per Drug', before: '$2.6B', after: '$1.4B', note: '-46%' },
-  { label: 'Time to Market', before: '12 years', after: '8 years', note: '-33%' },
+  { label: 'Pipeline Throughput', description: 'Same or greater output with a leaner organisation' },
+  { label: 'R&D Headcount', description: 'Smaller teams move faster with higher confidence' },
+  { label: 'Cost Per Drug', description: 'Fewer failures means less wasted investment' },
+  { label: 'Time to Market', description: 'Every phase compressed, every decision faster' },
 ];
 
 export function EfficiencySection() {
@@ -42,21 +42,12 @@ export function EfficiencySection() {
             variants={slideUp}
             className="rounded-xl border border-kz-border-default bg-kz-bg-secondary p-5"
           >
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">
+            <p className="mb-2 text-lg font-semibold text-kz-text-primary">
               {m.label}
             </p>
-            <div className="flex items-center gap-3">
-              <span className="text-lg text-kz-text-tertiary line-through">
-                {m.before}
-              </span>
-              <ArrowRight size={16} className="text-kz-text-tertiary" />
-              <span className="text-lg font-semibold text-kz-text-primary">
-                {m.after}
-              </span>
-              <span className="ml-auto rounded-full border border-kz-green/30 bg-kz-green/10 px-2 py-0.5 text-xs font-semibold text-kz-green">
-                {m.note}
-              </span>
-            </div>
+            <p className="text-sm leading-relaxed text-kz-text-secondary">
+              {m.description}
+            </p>
           </motion.div>
         ))}
       </div>

@@ -25,7 +25,7 @@ export const heartTissue: ZoomLevelMeta = {
     {
       id: 'tissue-untreated',
       title: 'The Cellular Neighbourhood Under Siege',
-      body: 'At the tissue level, the damage becomes visible. Amyloid fibrils — long, insoluble protein threads — weave between cardiomyocytes (heart muscle cells), physically separating them and disrupting their coordinated contraction. Capillaries are compressed, reducing oxygen delivery. The extracellular matrix, normally a flexible scaffold, becomes rigid with amyloid deposits. The computational model quantifies amyloid burden as a percentage of tissue volume — Eleanor\'s is at 18%, above the 15% threshold where functional impairment accelerates.',
+      body: 'At the tissue level, the damage becomes visible. Amyloid fibrils — long, insoluble protein threads — weave between cardiomyocytes (heart muscle cells), physically separating them and disrupting their coordinated contraction. Capillaries are compressed, reducing oxygen delivery. The extracellular matrix, normally a flexible scaffold, becomes rigid with amyloid deposits. The computational model quantifies amyloid burden as a percentage of tissue volume — Edward\'s is at 18%, above the 15% threshold where functional impairment accelerates.',
       phase: 'untreated',
       zoomLevel: ZoomLevel.Tissue,
       timeRange: [0, 12],

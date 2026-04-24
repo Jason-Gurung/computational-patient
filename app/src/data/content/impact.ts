@@ -5,28 +5,28 @@ export const impactContent = {
   comparisons: [
     {
       category: 'Drug Development Timeline',
-      traditional: { value: '10-15 years', detail: 'Sequential phases, each requiring full patient recruitment' },
-      computational: { value: '6-9 years', detail: 'Virtual pre-screening eliminates dead-end candidates early' },
+      traditional: { detail: 'Sequential phases, each requiring full patient recruitment' },
+      computational: { detail: 'Virtual pre-screening eliminates dead-end candidates early. Every phase compresses.' },
     },
     {
-      category: 'Cost Per Approved Drug',
-      traditional: { value: '$2.6 billion', detail: 'Including cost of all failed candidates' },
-      computational: { value: '$1.4 billion', detail: 'Higher hit rate means fewer expensive late-stage failures' },
+      category: 'Development Cost',
+      traditional: { detail: 'High failure rates mean most investment is lost on drugs that never reach market' },
+      computational: { detail: 'Higher hit rates mean fewer expensive late-stage failures. Smaller trials cost less to run.' },
     },
     {
-      category: 'Phase II → Phase III Success',
-      traditional: { value: '28%', detail: 'Most drugs fail due to efficacy or safety surprises' },
-      computational: { value: '52%', detail: 'Model identifies likely failures before human exposure' },
+      category: 'Trial Success Rate',
+      traditional: { detail: 'Most drugs fail due to efficacy or safety surprises discovered too late' },
+      computational: { detail: 'The model identifies likely failures before human exposure. Better candidates advance.' },
     },
     {
-      category: 'Required Human Participants',
-      traditional: { value: '3,000-5,000', detail: 'Large cohorts needed for statistical power' },
-      computational: { value: '800-1,200', detail: 'Virtual trials provide the evidence base; human trials confirm' },
+      category: 'Patient Burden',
+      traditional: { detail: 'Large cohorts needed for statistical power across diverse populations' },
+      computational: { detail: 'Virtual trials provide the evidence base. Human trials confirm with far fewer participants.' },
     },
     {
       category: 'Rare Disease Feasibility',
-      traditional: { value: 'Often impossible', detail: 'Not enough patients to recruit for meaningful trials' },
-      computational: { value: 'Fully feasible', detail: 'Generate virtual patients with rare genetic profiles at any scale' },
+      traditional: { detail: 'Not enough patients to recruit for meaningful trials' },
+      computational: { detail: 'Generate virtual patients with rare genetic profiles at any scale.' },
     },
   ],
 

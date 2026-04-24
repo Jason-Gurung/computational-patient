@@ -1,5 +1,5 @@
-import { Slider } from '@/components/ui/slider';
 import { Users } from 'lucide-react';
+import { KzSlider } from './KzSlider';
 
 interface CohortSizeSelectorProps {
   value: number;
@@ -7,6 +7,13 @@ interface CohortSizeSelectorProps {
 }
 
 const STEPS = [100, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000];
+
+const LABELS: { stepIdx: number; label: string }[] = [
+  { stepIdx: 0, label: '100' },
+  { stepIdx: 2, label: '1K' },
+  { stepIdx: 5, label: '10K' },
+  { stepIdx: 8, label: '100K' },
+];
 
 function valueToStep(value: number): number {
   const idx = STEPS.indexOf(value);
@@ -18,6 +25,8 @@ function stepToValue(step: number): number {
 }
 
 export function CohortSizeSelector({ value, onChange }: CohortSizeSelectorProps) {
+  const step = valueToStep(value);
+
   return (
     <div className="rounded-xl border border-kz-border-default bg-kz-bg-secondary p-6">
       <div className="mb-4 flex items-center gap-3">
@@ -32,19 +41,28 @@ export function CohortSizeSelector({ value, onChange }: CohortSizeSelectorProps)
         <span className="text-sm text-kz-text-secondary">virtual patients</span>
       </div>
 
-      <Slider
-        value={[valueToStep(value)]}
-        onValueChange={(v: number[]) => onChange(stepToValue(v[0]))}
+      <KzSlider
         min={0}
         max={STEPS.length - 1}
         step={1}
+        value={step}
+        onChange={(v) => onChange(stepToValue(v))}
       />
 
-      <div className="mt-3 flex justify-between text-xs text-kz-text-tertiary">
-        <span>100</span>
-        <span>1K</span>
-        <span>10K</span>
-        <span>100K</span>
+      {/* Labels positioned at their actual step percentages */}
+      <div className="relative mt-2 h-5">
+        {LABELS.map(({ stepIdx, label }) => {
+          const pos = (stepIdx / (STEPS.length - 1)) * 100;
+          return (
+            <span
+              key={label}
+              className="absolute -translate-x-1/2 text-xs text-kz-text-tertiary"
+              style={{ left: `${pos}%` }}
+            >
+              {label}
+            </span>
+          );
+        })}
       </div>
 
       {/* Mini grid visualization */}

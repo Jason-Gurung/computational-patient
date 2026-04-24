@@ -51,12 +51,12 @@ Inside `app/src/sections/landing/`:
    - "Pfizer's Data is the Moat"
    - Each with an icon (use lucide-react), staggered reveal animation
 
-3. **ImpactNumbers** — Animated counters showing before/after:
-   - 10-15 years → 6-9 years
-   - $2.6B → $1.4B
-   - 28% → 52% success rate
-   - 3,000+ → 800-1,200 participants
-   - Animate the numbers counting up on scroll into view
+3. **ImpactNumbers** — Show current-state metrics with qualitative improvement labels:
+   - 10-15 years → "Dramatically shorter"
+   - $2.6B → "Substantially reduced"
+   - 28% success rate → "Significantly higher"
+   - 3,000+ participants → "A fraction of today"
+   - Animate the current numbers counting up on scroll into view. Do NOT use specific projected improvement numbers — only qualitative descriptions.
 
 4. **TimelineComparison** — Visual comparison:
    - Traditional drug development timeline (long, sequential phases)

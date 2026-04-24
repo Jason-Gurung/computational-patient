@@ -32,7 +32,7 @@ export function NarrationOverlay({ narrations, currentWeek }: NarrationOverlayPr
   if (!narration) return null;
 
   return (
-    <div className="w-80">
+    <div className="w-full">
       <NarrationPanel narration={narration} className="rounded-xl border-kz-border-default bg-kz-bg-secondary/80 backdrop-blur-md" />
     </div>
   );

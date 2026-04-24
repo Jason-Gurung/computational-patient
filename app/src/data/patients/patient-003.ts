@@ -2,12 +2,12 @@ import type { PatientProfile } from '@/shared/types';
 
 export const patient003: PatientProfile = {
   id: 'patient-003',
-  name: 'Adaeze Okafor',
+  name: 'Adewale Okafor',
   age: 67,
-  sex: 'female',
-  weightKg: 75,
-  heightCm: 160,
-  bmi: 29.3,
+  sex: 'male',
+  weightKg: 88,
+  heightCm: 176,
+  bmi: 28.4,
   ancestry: 'West African',
   isGenerated: true,
 

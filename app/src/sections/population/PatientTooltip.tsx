@@ -3,9 +3,9 @@ import { OUTCOME_LABELS, OUTCOME_COLORS } from '@/shared/constants/outcomes';
 import { MousePointerClick } from 'lucide-react';
 
 const PATIENT_NAMES: Record<string, { name: string; age: number; sex: string }> = {
-  'patient-001': { name: 'Eleanor Voss', age: 72, sex: 'Female' },
+  'patient-001': { name: 'Edward Voss', age: 72, sex: 'Male' },
   'patient-002': { name: 'Marcus Chen', age: 58, sex: 'Male' },
-  'patient-003': { name: 'Amara Osei', age: 65, sex: 'Female' },
+  'patient-003': { name: 'Adewale Okafor', age: 67, sex: 'Male' },
 };
 
 function getOutcomeAtWeek(patient: PopulationPatient, week: number): PatientOutcome {

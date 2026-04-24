@@ -29,13 +29,10 @@ export function MetricComparison() {
           <div className="grid items-center gap-4 md:grid-cols-[1fr_auto_1fr]">
             {/* Traditional */}
             <div className="rounded-xl border border-kz-border-subtle bg-kz-bg-primary/50 p-4">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-kz-text-tertiary">
                 Traditional
               </p>
-              <p className="text-2xl font-bold text-kz-text-secondary">
-                {comp.traditional.value}
-              </p>
-              <p className="mt-2 text-xs leading-relaxed text-kz-text-tertiary">
+              <p className="text-sm leading-relaxed text-kz-text-secondary">
                 {comp.traditional.detail}
               </p>
             </div>
@@ -49,13 +46,10 @@ export function MetricComparison() {
 
             {/* Computational */}
             <div className="rounded-xl border border-kz-blue/30 bg-kz-blue/5 p-4 shadow-[0_0_20px_rgba(79,195,247,0.1)]">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-kz-blue">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-kz-blue">
                 Computational
               </p>
-              <p className="text-2xl font-bold text-kz-text-primary">
-                {comp.computational.value}
-              </p>
-              <p className="mt-2 text-xs leading-relaxed text-kz-text-secondary">
+              <p className="text-sm leading-relaxed text-kz-text-primary">
                 {comp.computational.detail}
               </p>
             </div>

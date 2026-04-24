@@ -8,7 +8,7 @@ interface ZoomBreadcrumbProps {
 
 export function ZoomBreadcrumb({ currentIndex, onNavigate }: ZoomBreadcrumbProps) {
   return (
-    <div className="absolute left-4 top-4 z-10 flex items-center gap-1 rounded-xl border border-kz-border-default bg-kz-bg-secondary/80 px-4 py-2 backdrop-blur-md">
+    <div className="flex items-center gap-1 rounded-xl border border-kz-border-default bg-kz-bg-secondary/80 px-4 py-1.5 backdrop-blur-md">
       {HEART_ZOOM_LEVELS.slice(0, currentIndex + 1).map((level, i) => {
         const isLast = i === currentIndex;
         const shortLabel = level.label.split(' — ')[0].split(' / ')[0];

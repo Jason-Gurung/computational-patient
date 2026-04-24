@@ -1,5 +1,5 @@
-import { Slider } from '@/components/ui/slider';
 import { Database, Sparkles } from 'lucide-react';
+import { KzSlider } from './KzSlider';
 
 interface RealSyntheticRatioProps {
   value: number; // 0-1, fraction that is "real"
@@ -38,12 +38,12 @@ export function RealSyntheticRatio({ value, cohortSize, onChange }: RealSyntheti
         </div>
       </div>
 
-      <Slider
-        value={[value * 100]}
-        onValueChange={(v: number[]) => onChange(v[0] / 100)}
+      <KzSlider
         min={5}
         max={95}
         step={5}
+        value={pct}
+        onChange={(v) => onChange(v / 100)}
       />
 
       <div className="mt-4 grid grid-cols-2 gap-4">
